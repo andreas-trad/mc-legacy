@@ -95,21 +95,54 @@ window.MotroCortex = function(options){
 
      expressions:
      1. index (starts with @)
-     @index>x
-     @index<x
-     @index<=x
-     @index>=x
-     @index==x
+     @index>x   ^@index\ *?\>\ *?\d+$
+     @index<x   ^@index\ *?\<\ *?\d+$
+     @index<=x  ^@index\ *?\<\=\ *?\d+$
+     @index>=x  /^@index\ *?\>\=\ *?\d+$
+     @index==x  /^@index\ *?\={2}\ *?\d+$
      @index in [x,x,x....]
-     @index odd
-     @index even
+     @index odd /^@index *?odd$/
+     @index even    /^@index *?even$/
      */
     Thread.prototype.createSelectionFunction = function(selector){
+        var expressions = [
+            {
+                name:'index greater than',
+                rxp:new RegExp(/^@index\ *?\>\ *?\d+$/)
+            },
+            {
+                name:'index less than',
+                rxp:new RegExp(/^@index\ *?\<\ *?\d+$/)
+            },
+            {
+                name:'index less or equal to',
+                rxp:new RegExp(/^@index\ *?\<\=\ *?\d+$/)
+            },
+            {
+                name:'index greater or equal to',
+                rxp:new RegExp(/^@index\ *?\>\=\ *?\d+$/)
+            },
+            {
+                name:'index equals to',
+                rxp:new RegExp(/^@index\ *?\={2}\ *?\d+$/)
+            },
+            {
+                name:'index odd',
+                rxp:new RegExp(/^@index *?odd$/)
+            },
+            {
+                name:'index even',
+                rxp:new RegExp(/^@index *?even$/)
+            }
+        ];
+
         var selectorArray = selector.split(":");
 
         var selectorArrayLength = selectorArray.length;
         for(var i=0; i<selectorArrayLength - 1; i++){
-            if(selectorArrayLength.indexOf('@') == -1){
+            if(selectorArrayLength.indexOf('@') == 0){
+
+            } else {
 
             }
         }
