@@ -1,6 +1,47 @@
 window.MotroCortex = function(options){
     var mc_debug = options.hasOwnProperty('debug')?options.debug:false;
-    var mc_forceJQLoading = options.hasOwnProperty('forceJQload')?options.forceJQload:false;
+    var globals = [];
+
+    var StepCreator = function(){
+        var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
+
+        this.createStep = function(selector, attributes){
+            var properties = {};
+            var options = {};
+
+            for(var property in attributes){
+                if(optionsNames.indexOf(property) != -1){
+                    options[property] = attributes[propery];
+                } else {
+                    properties[property] = attributes[property];
+                }
+            }
+
+            var selectorArray = selector.split(":");
+
+            var selectorArrayLength = selectorArray.length;
+            for(var i=0; i<selectorArrayLength; i++){
+                
+            }
+
+        };
+    };
+
+    var Thread = function(superNode){
+        var steps = [];
+    };
+
+    Thread.prototype = (function(){
+
+    }());
+
+    var Event = function(){
+        var threads = [];
+    };
+
+    Event.prototype = (function(){
+
+    }());
 
 
     var CMSPARSER = new function () {
