@@ -9,11 +9,14 @@ window.MotroCortex = function(options){
 
     var compile = function(topNode){
         for(var property in topNode.attributes){
-            var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.]*?/);
+            var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.\-\_]*?/);
 
             if(topNode.attributes.hasOwnProperty(property)){
                 // step 0. Check if global
-                if(globalsRegx.exec(property)){
+                if(property == "@index" || property == "@params" || property == "@domel"){
+                    MC.log("warn", "The keywords/parameter names @index, @params and @domel are reserved by MotorCortex " +
+                        "and cannot be used as a global variable's name. The declared global " + property + " will be ignored!");
+                } else if(globalsRegx.exec(property)){
                     globals[property] = topNode.attributes[property];
                 } else {
                     MC.log("warn", "The property " + property + " should begin with the character '@'. It will be ignored!");
@@ -78,9 +81,18 @@ window.MotroCortex = function(options){
         };
     }());
 
+    /*
+    Creates the Thread object
+    It returns an array containing any extra Threads that might come up during the node analysis.
+    New Threads come up if in the body of the actual Thread's node should be separated in more than one
+     */
     var Thread = function(selector, node){
         var steps = [];
         var selectionFunction = this.createSelectionFunction(selector);
+
+        var extraThreads = [];
+
+
     };
 
     /*
@@ -92,58 +104,211 @@ window.MotroCortex = function(options){
      triggeringElement
      not(triggeringElement)
      expressions
-
-     expressions:
-     1. index (starts with @)
-     @index>x   ^@index\ *?\>\ *?\d+$
-     @index<x   ^@index\ *?\<\ *?\d+$
-     @index<=x  ^@index\ *?\<\=\ *?\d+$
-     @index>=x  /^@index\ *?\>\=\ *?\d+$
-     @index==x  /^@index\ *?\={2}\ *?\d+$
-     @index in [x,x,x....]
-     @index odd /^@index *?odd$/
-     @index even    /^@index *?even$/
      */
-    Thread.prototype.createSelectionFunction = function(selector){
+    Thread.prototype.createSelectionFunction = function(selectorArray){
         var expressions = [
             {
                 name:'index greater than',
-                rxp:new RegExp(/^@index\ *?\>\ *?\d+$/)
+                rxp:new RegExp(/^@index\ *?\>\ *?\d+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        return ":gt(" + string.split(":")[1].trim() + ")";
+                    };
+                }
             },
             {
                 name:'index less than',
-                rxp:new RegExp(/^@index\ *?\<\ *?\d+$/)
+                rxp:new RegExp(/^@index\ *?\<\ *?\d+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        return ":lt(" + string.split(":")[1].trim() + ")";
+                    }
+                }
             },
             {
                 name:'index less or equal to',
-                rxp:new RegExp(/^@index\ *?\<\=\ *?\d+$/)
+                rxp:new RegExp(/^@index\ *?\<\=\ *?\d+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        return ":lt(" + string.split(":")[1].trim() + "):eq"+ string.split(":")[1].trim() + ")";
+                    }
+                }
             },
             {
                 name:'index greater or equal to',
-                rxp:new RegExp(/^@index\ *?\>\=\ *?\d+$/)
+                rxp:new RegExp(/^@index\ *?\>\=\ *?\d+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        return ":gt(" + string.split(":")[1].trim() + "):eq"+ string.split(":")[1].trim() + ")";
+                    }
+                }
             },
             {
                 name:'index equals to',
-                rxp:new RegExp(/^@index\ *?\={2}\ *?\d+$/)
+                rxp:new RegExp(/^@index\ *?\={2}\ *?\d+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        return ":eq(" + string.split(":")[1].trim() + ")";
+                    }
+                }
             },
             {
                 name:'index odd',
-                rxp:new RegExp(/^@index *?odd$/)
+                rxp:new RegExp(/^@index *?odd$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        return ":odd";
+                    }
+                }
             },
             {
                 name:'index even',
-                rxp:new RegExp(/^@index *?even$/)
+                rxp:new RegExp(/^@index *?even$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        return ":even";
+                    }
+                }
+            },
+            // parametric (uses the MotorCortex call parameters)
+            {
+                name:'index greater than parameter',
+                rxp:new RegExp(/^@index\ *?\>\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        var key = string.split(":")[1].trim().split('.')[1];
+                        if(!params.hasOwnProperty(key)){
+                            MC.log("error", "The expected params key " + key + " is not present. The selector will be ignored!");
+                            return "";
+                        } else {
+                            return ":gt(" + params[key] + ")";
+                        }
+                    };
+                }
+            },
+            {
+                name:'index less than parameter',
+                rxp:new RegExp(/^@index\ *?\<\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        var key = string.split(":")[1].trim().split('.')[1];
+                        if(!params.hasOwnProperty(key)){
+                            MC.log("error", "The expected params key " + key + " is not present. The selector will be ignored!");
+                            return "";
+                        } else {
+                            return ":lt(" + params[key] + ")";
+                        }
+                    };
+                }
+            },
+            {
+                name:'index less or equal to parameter',
+                rxp:new RegExp(/^@index\ *?\<\=\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        var key = string.split(":")[1].trim().split('.')[1];
+                        if(!params.hasOwnProperty(key)){
+                            MC.log("error", "The expected params key " + key + " is not present. The selector will be ignored!");
+                            return "";
+                        } else {
+                            return ":lt(" + params[key] + "):eq"+ params[key] + ")";
+                        }
+
+                    };
+                }
+            },
+            {
+                name:'index greater or equal to parameter',
+                rxp:new RegExp(/^@index\ *?\>\=\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        var key = string.split(":")[1].trim().split('.')[1];
+                        if(!params.hasOwnProperty(key)){
+                            MC.log("error", "The expected params key " + key + " is not present. The selector will be ignored!");
+                            return "";
+                        } else {
+                            return ":gt(" + params[key] + "):eq"+ params[key] + ")";
+                        }
+                    };
+                }
+            },
+            {
+                name:'index greater than parameter',
+                rxp:new RegExp(/^@index\ *?\={2}\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
+                createSelectionFunction:function(string){
+                    return function(params){
+                        var key = string.split(":")[1].trim().split('.')[1];
+                        if(!params.hasOwnProperty(key)){
+                            MC.log("error", "The expected params key " + key + " is not present. The selector will be ignored!");
+                            return "";
+                        } else {
+                            return ":eq(" + params[key] + ")";
+                        }
+                    };
+                }
             }
         ];
 
-        var selectorArray = selector.split(":");
-
         var selectorArrayLength = selectorArray.length;
+
+        var selectionFunctions = [];
+        var triggeringElementFunction;
+        var triggeringElementFunctionFound = false;
+
         for(var i=0; i<selectorArrayLength - 1; i++){
-            if(selectorArrayLength.indexOf('@') == 0){
+            if(selectorArray[i].indexOf('@') != 0){
+                if(selectorArray[i] == "triggeringElement"){
+                    if(triggeringElementFunctionFound){
+                        MC.log("warn", "The triggering object filter seems to have been applied twice. The second directive will be ignored!");
+                        continue;
+                    }
+                    triggeringElementFunction = function(e){
+                        return $(e.target);
+                    };
+                    triggeringElementFunctionFound = true;
+                } else if(selectorArray[i].replace(/ +?/g, '') == "not(triggeringElement)"){
+                    if(triggeringElementFunctionFound){
+                        MC.log("warn", "The triggering object filter seems to have been applied twice. The second directive will be ignored!");
+                        continue;
+                    }
+                    triggeringElementFunction = function(e){
+                        return not($(e.target));
+                    };
+                    triggeringElementFunctionFound = true;
+                }
 
+                selectionFunctions.push(function(){
+                    return selectorArray[i];
+                });
             } else {
+                var found = false;
+                for(var j=0; j<expressions.length; j++){
+                    if(expressions[j].rxp.exec(selectorArray[i])){
+                        selectionFunctions.push(expressions[j].createSelectionFunction(selectorArray[i]));
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found){
+                    MC.log("error", "The selection " + selectorArray[i] + " seems to be invalid. It will be ignored!");
+                }
+            }
+        }
 
+        /* returns the selection creation function combining all the expressions and selectors
+        The function returns the jquery selection ready to be used
+         */
+        return function(params, e){
+            var filterString = '';
+
+            for(var i=0; i<selectionFunctions; i++){
+                string += selectionFunctions[i](params);
+            }
+
+            if(triggeringElementFunction){
+                return $(filterString);
+            } else {
+                return triggeringElementFunction.filter(filterString);
             }
         }
     };
@@ -157,11 +322,20 @@ window.MotroCortex = function(options){
     };
 
     Event.prototype.addThread = function(selector, node){
-        var thread = new Thread();
         this.addTheThread(selector, node);
     };
 
+    Event.prototype.fire = function(e, options, callback){
 
+    }
+
+
+
+
+
+    /******************************************************************************************
+     *                  CMS TO JSON
+     ******************************************************************************************/
     var CMSPARSER = new function () {
 
         var base = this;
@@ -347,7 +521,7 @@ window.MotroCortex = function(options){
         if(!window.jQuery){
             this.log("error", "jQuery has not been loaded. Please load jQuery before MotorCortex.loadMSS invocation");
             this.execute = function(){
-                this.log("warn", "jQuery has not been loaded");
+                this.log("error", "jQuery has not been loaded");
             };
             return false;
         }
