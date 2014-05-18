@@ -1,5 +1,8 @@
-window.MotroCortex = function(options){
-    var mc_debug = options.hasOwnProperty('debug')?options.debug:false;
+window.MotorCortex = function(options){
+    var mc_debug = false;
+    if(options){
+        mc_debug = options.hasOwnProperty('debug')?options.debug:false;
+    }
     var globals = [];
     var events = [];
 
@@ -42,57 +45,100 @@ window.MotroCortex = function(options){
                 }
             }
         }
-
-
-
-        this.createStep = function(selector, attributes){
-            var properties = {};
-            var options = {};
-
-            for(var property in attributes){
-                if(optionsNames.indexOf(property) != -1){
-                    options[property] = attributes[propery];
-                } else {
-                    properties[property] = attributes[property];
-                }
-            }
-
-            var selectorArray = selector.split(":");
-
-            var selectorArrayLength = selectorArray.length;
-            for(var i=0; i<selectorArrayLength; i++){
-                
-            }
-
-        };
     };
-
-    var PlainNodeHandler = function(node){
-
-    };
-
-    var Step = function(){
-        var functions = [];
-    };
-
-    Step.prototype = (function(){
-        var callbackHandler = {
-
-        };
-    }());
 
     /*
     Creates the Thread object
     It returns an array containing any extra Threads that might come up during the node analysis.
     New Threads come up if in the body of the actual Thread's node should be separated in more than one
      */
-    var Thread = function(selector, node){
-        var steps = [];
+    var Thread = function(selector, node, ParentThread, parentProperties){
+        if(!parentProperties){
+            parentProperties = {
+                attributes:{},
+                options:{}
+            };
+        }
+
+        var threadCollections = [];
         var selectionFunction = this.createSelectionFunction(selector);
 
-        var extraThreads = [];
+        /*
+        first create the base ThreadCollection of the specific node
+         */
+        //threadCollections.push(new Thread());
+        var hasChildren = false;
+        for(var property in node.children){
+            hasChildren = true;
+            break;
+        }
+
+        var hasCallback = false;
+        if(node.hasOwnProperty("complete")){
+            hasCallback = true;
+        }
+
+        /*
+        case A -- plain animation object. Doesn't have subThreads, doesn't have callback.
+        It executes and logs back to its parent Thread
+         */
+        if(!hasCallback && !hasChildren){
+            this.createAnimationFunction(parentProperties, node, function(){
+                ParentThread.CallbackHandler.animationEnded();
+            });
+        }
+    };
 
 
+    Thread.prototype.createAnimationFunction = function(parentProperties, node, callback){
+        var globalsRegex = new RegExp(/^@globals\.[a-zA-Z0-9\-\_]*$/);
+
+        for(var property in node.attributes){
+            if(globalsRegex.exec(node.attributes[property])){
+                var expectedGlobalsKey = node.attributes[property].split('.')[1].trim();
+                if(!globals.hasOwnProperty("@"+expectedGlobalsKey)){
+                    MC.log("error", "The global variable " + node.attributes[property] + " is not defined. It will be ignored");
+                } else {
+                    node.attributes[property] = globals[expectedGlobalsKey];
+                }
+            }
+
+            if(optionsNames.indexOf(property) >= 0){
+                parentProperties.options[property] = node.attributes[property];
+            } else {
+                parentProperties.attributes[property] = node.attributes[property];
+            }
+        }
+
+        this.animationFunction = function(params, callback){
+
+        }
+    }
+
+    /*
+    CallbackHandler object takes as parameters the number of ThreadCollections that handles,
+    the ParentThread (which is the parent Thread of the ThreadCollection to which it belongs)
+    and a callback that is executed whenever all animations have finished
+     */
+    Thread.prototype.CallbackHandler = {
+        numberOfExecutedLeafs: 0,
+        ParentThread:null,
+
+        init: function(ParentThread, numberOfThreads, callback){
+            this.ParentThread = ParentThread;
+            this.numberOfThreds = numberOfThreads;
+        },
+
+        reset: function(){
+            this.numberOfExecutedLeafs = 0;
+        },
+
+        animationEnded: function(){
+            this.numberOfExecutedLeafs+=1;
+            if(this.numberOfExecutedLeafs == this.numberOfThreds){
+                callback();
+            }
+        }
     };
 
     /*
@@ -317,7 +363,7 @@ window.MotroCortex = function(options){
         var threads = [];
 
         this.addTheThread = function(selector, node){
-            threads.push(new Thread(selector, node));
+            threads.push(new Thread(selector, node, this));
         }
     };
 
