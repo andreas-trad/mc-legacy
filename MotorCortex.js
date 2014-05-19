@@ -1,4 +1,4 @@
-window.MotorCortex = function(options){
+window.MotroCortex = function(options){
     var mc_debug = false;
     if(options){
         mc_debug = options.hasOwnProperty('debug')?options.debug:false;
@@ -9,6 +9,15 @@ window.MotorCortex = function(options){
     var MC = this;
 
     var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
+
+    this.trigger = function(eventName, e, options, callback){
+        if(events.hasOwnProperty(eventName)){
+            //console.log('event found');
+            events[eventName].fire(e, options, callback);
+        } else {
+            MC.log("error", "The event with name " + eventName + " has not been defined in any of the MSS files. It will be ignored!");
+        }
+    }
 
     var compile = function(topNode){
         for(var property in topNode.attributes){
@@ -52,46 +61,23 @@ window.MotorCortex = function(options){
     It returns an array containing any extra Threads that might come up during the node analysis.
     New Threads come up if in the body of the actual Thread's node should be separated in more than one
      */
-    var Thread = function(selector, node, ParentThread, parentProperties){
+    var Thread = function(selector, node, EventObject, parentProperties, findString){
         if(!parentProperties){
             parentProperties = {
                 attributes:{},
                 options:{}
             };
         }
-
-        var threadCollections = [];
-        var selectionFunction = this.createSelectionFunction(selector);
-
-        /*
-        first create the base ThreadCollection of the specific node
-         */
-        //threadCollections.push(new Thread());
-        var hasChildren = false;
-        for(var property in node.children){
-            hasChildren = true;
-            break;
+        if(!findString){
+            findString = '';
         }
 
-        var hasCallback = false;
-        if(node.hasOwnProperty("complete")){
-            hasCallback = true;
-        }
+        this.selectionFunction = this.createSelectionFunction(selector, findString);
 
-        /*
-        case A -- plain animation object. Doesn't have subThreads, doesn't have callback.
-        It executes and logs back to its parent Thread
-         */
-        if(!hasCallback && !hasChildren){
-            this.createAnimationFunction(parentProperties, node, function(){
-                ParentThread.CallbackHandler.animationEnded();
-            });
-        }
-    };
-
-
-    Thread.prototype.createAnimationFunction = function(parentProperties, node, callback){
         var globalsRegex = new RegExp(/^@globals\.[a-zA-Z0-9\-\_]*$/);
+
+        var ownAttrs = JSON.parse(JSON.stringify(parentProperties));
+        ownAttrs.attributes = {};
 
         for(var property in node.attributes){
             if(globalsRegex.exec(node.attributes[property])){
@@ -99,47 +85,80 @@ window.MotorCortex = function(options){
                 if(!globals.hasOwnProperty("@"+expectedGlobalsKey)){
                     MC.log("error", "The global variable " + node.attributes[property] + " is not defined. It will be ignored");
                 } else {
-                    node.attributes[property] = globals[expectedGlobalsKey];
+                    node.attributes[property] = globals['@' + expectedGlobalsKey];
                 }
             }
 
             if(optionsNames.indexOf(property) >= 0){
-                parentProperties.options[property] = node.attributes[property];
+                ownAttrs.options[property] = node.attributes[property];
             } else {
-                parentProperties.attributes[property] = node.attributes[property];
+                //console.log(property);
+                ownAttrs.attributes[property] = node.attributes[property];
             }
         }
 
-        this.animationFunction = function(params, callback){
+        //console.log(parentProperties);
+        //console.log(ownAttrs);
 
+        /*
+        first create the base ThreadCollection of the specific node
+         */
+        //threadCollections.push(new Thread());
+        var callbackFunction = function(){
+            EventObject.CallbackHandler.animationEnded();
+        }
+
+        //console.log(node.children);
+
+        for(var childName in node.children){
+            if(childName != "complete"){
+                EventObject.addReadyThread(new Thread(this.selectionFunction, node.children[childName], EventObject, ownAttrs, childName));
+            } else {
+                var callbackThread = new Thread(this.selectionFunction, node.children.complete, EventObject, ownAttrs);
+                callbackFunction = function(e, params){
+                    callbackThread.execute(e, params);
+                }
+            }
+        }
+        //console.log(ownAttrs);
+        this.createAnimationFunction(ownAttrs, callbackFunction);
+
+        this.execute = function(e, params){
+            //console.log(params);
+            this.animationFunction(e, params, callbackFunction);
+        }
+
+    };
+
+
+    Thread.prototype.createAnimationFunction = function(properties){
+        var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*$/);
+        //var that = this;
+        if(!properties.options.hasOwnProperty("duration")){
+            properties.options.duration = '0.3s';
+            MC.log("error", "The duration has not been defined. The default (0.3s) will be used");
+        }
+
+        this.animationFunction = function(e, params, callback){
+            for(var property in properties.attributes){
+                if(paramsRegex.exec(properties.attributes[property])){
+                    var actualPropName = properties.attributes[property].split(".")[1].trim();
+                    if(params.hasOwnProperty(actualPropName)){
+                        properties.attributes[property] = params[actualPropName];
+                    } else {
+                        MC.log("error", "The variable " + actualPropName + " was expected in the params object but is not present. It will be ignored");
+                    }
+                }
+            }
+
+            properties.options.complete = function(){callback(e, params);};
+            //console.log(parentProperties);
+            //console.log(this.selectionFunction().length);
+            this.selectionFunction().velocity(properties.attributes, properties.options);
+            //console.log(properties);
         }
     }
 
-    /*
-    CallbackHandler object takes as parameters the number of ThreadCollections that handles,
-    the ParentThread (which is the parent Thread of the ThreadCollection to which it belongs)
-    and a callback that is executed whenever all animations have finished
-     */
-    Thread.prototype.CallbackHandler = {
-        numberOfExecutedLeafs: 0,
-        ParentThread:null,
-
-        init: function(ParentThread, numberOfThreads, callback){
-            this.ParentThread = ParentThread;
-            this.numberOfThreds = numberOfThreads;
-        },
-
-        reset: function(){
-            this.numberOfExecutedLeafs = 0;
-        },
-
-        animationEnded: function(){
-            this.numberOfExecutedLeafs+=1;
-            if(this.numberOfExecutedLeafs == this.numberOfThreds){
-                callback();
-            }
-        }
-    };
 
     /*
     gets the selector in the format selectionString:@data-x>2@index=2:eventName
@@ -151,7 +170,7 @@ window.MotorCortex = function(options){
      not(triggeringElement)
      expressions
      */
-    Thread.prototype.createSelectionFunction = function(selectorArray){
+    Thread.prototype.createSelectionFunction = function(selectorArray, findString){
         var expressions = [
             {
                 name:'index greater than',
@@ -295,75 +314,129 @@ window.MotorCortex = function(options){
             }
         ];
 
-        var selectorArrayLength = selectorArray.length;
+        var plainCSSSelector = function(string){
+            return function(params){
+                return string;
+            }
+        }
 
-        var selectionFunctions = [];
-        var triggeringElementFunction;
-        var triggeringElementFunctionFound = false;
 
-        for(var i=0; i<selectorArrayLength - 1; i++){
-            if(selectorArray[i].indexOf('@') != 0){
-                if(selectorArray[i] == "triggeringElement"){
-                    if(triggeringElementFunctionFound){
-                        MC.log("warn", "The triggering object filter seems to have been applied twice. The second directive will be ignored!");
-                        continue;
+        if(Object.prototype.toString.call( selectorArray ) === '[object Array]'){
+            var selectorArrayLength = selectorArray.length;
+
+            var selectionFunctions = [];
+            var triggeringElementFunction;
+            var triggeringElementFunctionFound = false;
+
+            for(var i=0; i<selectorArrayLength - 1; i++){
+                if(selectorArray[i].indexOf('@') != 0){
+                    if(selectorArray[i] == "triggeringElement"){
+                        if(triggeringElementFunctionFound){
+                            MC.log("warn", "The triggering object filter seems to have been applied twice. The second directive will be ignored!");
+                            continue;
+                        }
+                        triggeringElementFunction = function(e){
+                            return $(e.target);
+                        };
+                        triggeringElementFunctionFound = true;
+                    } else if(selectorArray[i].replace(/ +?/g, '') == "not(triggeringElement)"){
+                        if(triggeringElementFunctionFound){
+                            MC.log("warn", "The triggering object filter seems to have been applied twice. The second directive will be ignored!");
+                            continue;
+                        }
+                        triggeringElementFunction = function(e){
+                            return not($(e.target));
+                        };
+                        triggeringElementFunctionFound = true;
+                    } else {
+                        selectionFunctions.push(plainCSSSelector(selectorArray[i]));
                     }
-                    triggeringElementFunction = function(e){
-                        return $(e.target);
-                    };
-                    triggeringElementFunctionFound = true;
-                } else if(selectorArray[i].replace(/ +?/g, '') == "not(triggeringElement)"){
-                    if(triggeringElementFunctionFound){
-                        MC.log("warn", "The triggering object filter seems to have been applied twice. The second directive will be ignored!");
-                        continue;
+                } else {
+                    var found = false;
+                    for(var j=0; j<expressions.length; j++){
+                        if(expressions[j].rxp.exec(selectorArray[i])){
+                            selectionFunctions.push(expressions[j].createSelectionFunction(selectorArray[i]));
+                            found = true;
+                            break;
+                        }
                     }
-                    triggeringElementFunction = function(e){
-                        return not($(e.target));
-                    };
-                    triggeringElementFunctionFound = true;
+                    if(!found){
+                        MC.log("error", "The selection " + selectorArray[i] + " seems to be invalid. It will be ignored!");
+                    }
+                }
+            }
+            /* returns the selection creation function combining all the expressions and selectors
+             The function returns the jquery selection ready to be used
+             */
+            return function(params, e){
+                var filterString = '';
+
+                for(var i=0; i<selectionFunctions.length; i++){
+                    filterString += selectionFunctions[i](params);
                 }
 
-                selectionFunctions.push(function(){
-                    return selectorArray[i];
-                });
-            } else {
-                var found = false;
-                for(var j=0; j<expressions.length; j++){
-                    if(expressions[j].rxp.exec(selectorArray[i])){
-                        selectionFunctions.push(expressions[j].createSelectionFunction(selectorArray[i]));
-                        found = true;
-                        break;
-                    }
+                //console.log(filterString);
+
+                if(!triggeringElementFunction){
+                    var toreturn = $(filterString);
+                } else {
+                    var toreturn = triggeringElementFunction.filter(filterString);
                 }
-                if(!found){
-                    MC.log("error", "The selection " + selectorArray[i] + " seems to be invalid. It will be ignored!");
+
+                if(findString == ''){
+                    return toreturn;
+                } else {
+                    return toreturn.find(findString);
+                }
+            }
+        } else {
+            return function(params, e){
+                if(findString == ''){
+                    return selectorArray(params, e);
+                } else {
+                    return selectorArray(params, e).find(findString);
                 }
             }
         }
 
-        /* returns the selection creation function combining all the expressions and selectors
-        The function returns the jquery selection ready to be used
-         */
-        return function(params, e){
-            var filterString = '';
-
-            for(var i=0; i<selectionFunctions; i++){
-                string += selectionFunctions[i](params);
-            }
-
-            if(triggeringElementFunction){
-                return $(filterString);
-            } else {
-                return triggeringElementFunction.filter(filterString);
-            }
-        }
     };
 
     var Event = function(){
-        var threads = [];
+        this.threads = [];
 
         this.addTheThread = function(selector, node){
-            threads.push(new Thread(selector, node, this));
+            this.threads.push(new Thread(selector, node, this));
+        }
+
+        this.addReadyThread = function(thread){
+            this.threads.push(thread);
+        }
+    };
+
+    /*
+     CallbackHandler object takes as parameters the number of ThreadCollections that handles,
+     the ParentThread (which is the parent Thread of the ThreadCollection to which it belongs)
+     and a callback that is executed whenever all animations have finished
+     */
+    Event.prototype.CallbackHandler = {
+        numberOfExecutedLeafs: 0,
+
+        init: function(numberOfThreads, callback){
+            this.numberOfThreads = numberOfThreads;
+            this.callbackFunction = callback;
+            return this;
+        },
+
+        reset: function(){
+            this.numberOfExecutedLeafs = 0;
+            return this;
+        },
+
+        animationEnded: function(){
+            this.numberOfExecutedLeafs+=1;
+            if(this.numberOfExecutedLeafs == this.numberOfThreads){
+                this.callbackFunction();
+            }
         }
     };
 
@@ -372,8 +445,19 @@ window.MotorCortex = function(options){
     };
 
     Event.prototype.fire = function(e, options, callback){
+        if(!callback){
+            callback = function(){};
+        }
+        if(!options){
+            options = {};
+        }
+        this.CallbackHandler.init(this.threads.length, callback).reset();
 
-    }
+        for(var i=0; i<this.threads.length; i++){
+            //console.log('firing thread');
+            this.threads[i].execute(e, options);
+        }
+    };
 
 
 
