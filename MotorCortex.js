@@ -79,7 +79,10 @@ window.MotroCortex = function(options){
         var ownAttrs = JSON.parse(JSON.stringify(parentProperties));
         ownAttrs.attributes = {};
 
+        console.log(node);
+
         for(var property in node.attributes){
+            //console.log(property);
             if(globalsRegex.exec(node.attributes[property])){
                 var expectedGlobalsKey = node.attributes[property].split('.')[1].trim();
                 if(!globals.hasOwnProperty("@"+expectedGlobalsKey)){
@@ -133,6 +136,7 @@ window.MotroCortex = function(options){
 
     Thread.prototype.createAnimationFunction = function(properties){
         var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*$/);
+        var domelRegex = new RegExp(/^@domel\.[a-zA-Z0-9\-\_]*$/);
         //var that = this;
         if(!properties.options.hasOwnProperty("duration")){
             properties.options.duration = '0.3s';
@@ -140,6 +144,13 @@ window.MotroCortex = function(options){
         }
 
         this.animationFunction = function(e, params, callback){
+            var parametric = false;
+            // contains objects of format :
+            // whichPart (either attributes or options)
+            // whichKey (the key of the specific object that should be replaced)
+            // byWhichAttr: (the name of the dom element's attribute that will be used)
+            var parametrics = [];
+
             for(var property in properties.attributes){
                 if(paramsRegex.exec(properties.attributes[property])){
                     var actualPropName = properties.attributes[property].split(".")[1].trim();
@@ -148,14 +159,48 @@ window.MotroCortex = function(options){
                     } else {
                         MC.log("error", "The variable " + actualPropName + " was expected in the params object but is not present. It will be ignored");
                     }
+                } else if(domelRegex.exec(properties.attributes[property])){
+                    parametrics.push({
+                        whichPart:'attributes',
+                        whichKey:property,
+                        byWhichAttr:properties.attributes[property].split('.')[1]
+                    });
+                    parametric = true;
                 }
             }
 
-            properties.options.complete = function(){callback(e, params);};
-            //console.log(parentProperties);
-            //console.log(this.selectionFunction().length);
-            this.selectionFunction().velocity(properties.attributes, properties.options);
-            //console.log(properties);
+            if(!parametric){
+                properties.options.complete = function(){callback(e, params);};
+                //console.log(parentProperties);
+                //console.log(this.selectionFunction().length);
+                this.selectionFunction().velocity(properties.attributes, properties.options);
+                //console.log(properties);
+            } else {
+                var selectedElements = this.selectionFunction();
+                var CallbackHandler = {
+                    numberOfElements: selectedElements.length,
+                    numberOfFinished:0,
+
+                    finished: function(){
+                        this.numberOfFinished+=1;
+                        if(this.numberOfFinished == this.numberOfElements){
+                            callback(e, params);
+                        }
+                    }
+                };
+
+                selectedElements.each(function(){
+                    var ownAttrs = JSON.parse(JSON.stringify(properties));
+                    for(var i=0; i<parametrics.length; i++){
+                        //console.log($(this).attr(parametrics[i].byWhichAttr));
+                        ownAttrs[parametrics[i].whichPart][parametrics[i].whichKey] = $(this).attr(parametrics[i].byWhichAttr);
+                    }
+                    //console.log(ownAttrs.options);
+                    ownAttrs.options.complete = function(){CallbackHandler.finished()};
+                    $(this).velocity(ownAttrs.attributes, ownAttrs.options);
+                });
+            }
+
         }
     }
 
