@@ -169,6 +169,24 @@ window.MotroCortex = function(options){
                 }
             }
 
+            for(var property in properties.options){
+                if(paramsRegex.exec(properties.options[property])){
+                    var actualPropName = properties.options[property].split(".")[1].trim();
+                    if(params.hasOwnProperty(actualPropName)){
+                        properties.options[property] = params[actualPropName];
+                    } else {
+                        MC.log("error", "The variable " + actualPropName + " was expected in the params object but is not present. It will be ignored");
+                    }
+                } else if(domelRegex.exec(properties.options[property])){
+                    parametrics.push({
+                        whichPart:'options',
+                        whichKey:property,
+                        byWhichAttr:properties.options[property].split('.')[1]
+                    });
+                    parametric = true;
+                }
+            }
+
             if(!parametric){
                 properties.options.complete = function(){callback(e, params);};
                 //console.log(parentProperties);

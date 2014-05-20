@@ -10,6 +10,10 @@
     margin-bottom: 4px;
 }
 
+.section1 img{
+    height: 100%;
+}
+
 .section2{
     width:350px;
     height: 50px;
