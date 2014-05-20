@@ -79,7 +79,7 @@ window.MotroCortex = function(options){
         var ownAttrs = JSON.parse(JSON.stringify(parentProperties));
         ownAttrs.attributes = {};
 
-        console.log(node);
+        //console.log(node);
 
         for(var property in node.attributes){
             //console.log(property);
@@ -100,38 +100,44 @@ window.MotroCortex = function(options){
             }
         }
 
-        //console.log(parentProperties);
-        //console.log(ownAttrs);
-
         /*
         first create the base ThreadCollection of the specific node
          */
         //threadCollections.push(new Thread());
         var callbackFunction = function(){
+            //console.log('loggin end');
             EventObject.CallbackHandler.animationEnded();
         }
 
-        //console.log(node.children);
-
-        for(var childName in node.children){
+        var childs = Object.keys(node.children);
+        for(var i=0; i<childs.length; i++){
+            var childName = childs[i];
+            //console.log(childName);
             if(childName != "complete"){
                 EventObject.addReadyThread(new Thread(this.selectionFunction, node.children[childName], EventObject, ownAttrs, childName));
             } else {
-                var callbackThread = new Thread(this.selectionFunction, node.children.complete, EventObject, ownAttrs);
+                var nestedEvent = new Event();
+                nestedEvent.addReadyThread(new Thread(this.selectionFunction, node.children.complete, nestedEvent, ownAttrs));
                 callbackFunction = function(e, params){
-                    callbackThread.execute(e, params);
+                    var callback = function(){
+                        EventObject.CallbackHandler.animationEnded();
+                    }
+                    nestedEvent.fire(e, params, callback);
+                    //callbackThread.execute(e, params);
                 }
             }
         }
-        //console.log(ownAttrs);
+
         this.createAnimationFunction(ownAttrs, callbackFunction);
 
         this.execute = function(e, params){
-            //console.log(params);
+            //console.log('executing');
+            //console.log(this.selectionFunction());
             this.animationFunction(e, params, callbackFunction);
         }
 
     };
+
 
 
     Thread.prototype.createAnimationFunction = function(properties){
@@ -474,6 +480,29 @@ window.MotroCortex = function(options){
         this.addReadyThread = function(thread){
             this.threads.push(thread);
         }
+
+        this.CallbackHandler = {
+            numberOfExecutedLeafs: 0,
+
+            init: function(numberOfThreads, callback){
+                this.numberOfThreads = numberOfThreads;
+                this.callbackFunction = callback;
+                return this;
+            },
+
+            reset: function(){
+                this.numberOfExecutedLeafs = 0;
+                return this;
+            },
+
+            animationEnded: function(){
+                this.numberOfExecutedLeafs+=1;
+                console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
+                if(this.numberOfExecutedLeafs == this.numberOfThreads){
+                    this.callbackFunction();
+                }
+            }
+        };
     };
 
     /*
@@ -481,27 +510,6 @@ window.MotroCortex = function(options){
      the ParentThread (which is the parent Thread of the ThreadCollection to which it belongs)
      and a callback that is executed whenever all animations have finished
      */
-    Event.prototype.CallbackHandler = {
-        numberOfExecutedLeafs: 0,
-
-        init: function(numberOfThreads, callback){
-            this.numberOfThreads = numberOfThreads;
-            this.callbackFunction = callback;
-            return this;
-        },
-
-        reset: function(){
-            this.numberOfExecutedLeafs = 0;
-            return this;
-        },
-
-        animationEnded: function(){
-            this.numberOfExecutedLeafs+=1;
-            if(this.numberOfExecutedLeafs == this.numberOfThreads){
-                this.callbackFunction();
-            }
-        }
-    };
 
     Event.prototype.addThread = function(selector, node){
         this.addTheThread(selector, node);
