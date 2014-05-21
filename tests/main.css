@@ -1,0 +1,21 @@
+*
+{
+	font-family: 'Lato', sans-serif;
+}
+
+.section1{
+    background-color: #FFF;
+    height: 50px;
+    width:0%;
+}
+
+.section1 span
+{
+	opacity:0;
+	font-weight:bold;
+	color:white;
+	position:relative;
+	float:right;
+	padding:10px;
+	top:5px;
+}
