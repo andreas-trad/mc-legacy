@@ -10,7 +10,6 @@
 		
 		duration:300;
 		backgroundColorBlue: 50%;
-		backgroundColorRed: 50%;
 		
 	}
 }
