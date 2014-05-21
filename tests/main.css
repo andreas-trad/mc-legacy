@@ -19,3 +19,25 @@
 	padding:10px;
 	top:5px;
 }
+
+.section2 
+{
+	width:100px;
+	height:100px;
+	position:relative;
+	display:block;
+	margin-bottom:10px;
+	text-align:center;
+	background-color:#F38630;
+	-webkit-border-radius: 50%;
+	-moz-border-radius: 50%;
+	border-radius: 50%;
+}
+
+.section2 span
+{
+	color:white;
+	font-weight:bold;
+	position:relative;
+	top:40px;
+}

@@ -1,9 +1,9 @@
-.section1:showPososta{
-    backgroundColorBlue: @domel.data-pososto;
-    backgroundColorGreen: @domel.data-pososto;
-    backgroundColorRed: @domel.data-pososto;
+.section1:showPercentage{
+    backgroundColorBlue: @domel.data-percentage;
+    backgroundColorGreen: @domel.data-percentage;
+    backgroundColorRed: @domel.data-percentage;
     duration:@domel.duration;
-    width:@domel.data-pososto;
+    width:@domel.data-percentage;
     easing: swing;
 	
 	complete

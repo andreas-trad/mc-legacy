@@ -14,12 +14,12 @@
         var mc = new MotroCortex({
             debug:true
         });
-        mc.loadMSS("./mss/test1.mss");
+        mc.loadMSS("./mss/test2.mss");
 
         $(document).ready(function(){
             $("#button").click(function(){
                 //alert('clicked');
-                mc.trigger("showPercentage", null, {height:'400px'}, function(){
+                mc.trigger("Circles", null, {height:'400px'}, function(){
                     console.log('finished');
                 });
             })
@@ -27,21 +27,21 @@
 
     </script>
 
-    <title>MotorCortex Test 1</title>
+    <title>MotorCortex Test 2</title>
 </head>
 <body>
 <div class="container">
-    <div class="section1" data-percentage="80%" duration="200">
-    	<span>80%</span>
+    <div class="section2" duration="400">
+    	<span>Circle 1</span>
     </div>
-    <div class="section1" data-percentage="47%" duration="400">
-    	<span>47%</span>
+    <div class="section2" duration="600">
+    	<span>Circle 2</span>
     </div>
-    <div class="section1" data-percentage="35%" duration="800">
-    	<span>35%</span>
+    <div class="section2" duration="1000">
+    	<span>Circle 3</span>
     </div>
-    <div class="section1" data-percentage="22%" duration="1600">
-    	<span>22%</span>
+    <div class="section2" duration="1600">
+    	<span>Circle 4</span>
     </div>
 </div>
     <button id="button">Click me!</button>
