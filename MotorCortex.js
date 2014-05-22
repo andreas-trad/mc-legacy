@@ -11,7 +11,7 @@ window.MotroCortex = function(options){
     var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
 
     this.trigger = function(eventName, e, options, callback){
-        if(eventName)
+        //if(eventName)
 
 
         if(events.hasOwnProperty(eventName)){
