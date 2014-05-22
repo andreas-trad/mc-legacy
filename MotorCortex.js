@@ -22,7 +22,7 @@ window.MotroCortex = function(options){
         }
     }
 
-    var compile = function(topNode){
+    var compile = function(topNode, callback){
         for(var property in topNode.attributes){
             var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.\-\_]*?/);
 
@@ -57,6 +57,8 @@ window.MotroCortex = function(options){
                 }
             }
         }
+
+        callback();
     };
 
     /*
@@ -720,7 +722,7 @@ window.MotroCortex = function(options){
     /** This function is used for loading the MSS files and initiate the MotorCortex functionality
      * @param {Array} or {String}
      */
-    this.loadMSS = function(files){
+    this.loadMSS = function(files, callback){
         var that = this;
 
         if(!window.jQuery){
@@ -744,6 +746,19 @@ window.MotroCortex = function(options){
         }
 
         var filesLength = filesToScan.length;
+
+        var LoadCallbackHandler = {
+            totalLoaded:0,
+
+            fileLoaded: function(){
+                LoadCallbackHandler.totalLoaded += 1;
+
+                if(LoadCallbackHandler.totalLoaded === filesLength){
+                    callback();
+                }
+            }
+        };
+
         for(var i=0; i<filesLength; i++){
             var currentlyScanning = filesToScan[i];
             $.ajax({
@@ -752,7 +767,7 @@ window.MotroCortex = function(options){
                 async: true,
                 success:function(cssString){
                     var json = CMSPARSER.toJSON(cssString);
-                    compile(json);
+                    compile(json, LoadCallbackHandler.fileLoaded);
                 },
                 error:function(err, textStatus, errorThrown){
                     that.log("error", "The MSS file " + currentlyScanning + " seems to be missing", errorThrown);

@@ -13,15 +13,19 @@
         var mc = new MotroCortex({
             debug:true
         });
-        mc.loadMSS("./mss/index2.mss");
+        mc.loadMSS(["./mss/index2.mss", "./mss/index.mss"], function(){
+            
+            mc.trigger("showPososta", null, {height:'400px'}, function(){
+                console.log('finished');
+            });
+
+            //console.log('x');
+        });
 
         $(document).ready(function(){
-            $("#button").click(function(){
+            //console.log('doc ready');
                 //alert('clicked');
-                mc.trigger("showPososta", null, {height:'400px'}, function(){
-                    console.log('finished');
-                });
-            })
+
         })
 
     </script>
