@@ -17,10 +17,21 @@
         mc.loadMSS("./mss/test4.mss");
 
         $(document).ready(function(){
-            $("#button").click(function(){
-                //alert('clicked');
+            $(".giftdiv").click(function(){
                 mc.trigger("Advertisement", null, {height:'400px'}, function(){
-                    console.log('finished');
+                    console.log('advertise');
+                });
+            })
+            
+           	$(".giftbox").hover(function(){
+                mc.trigger("TiltBox", null, {height:'400px'}, function(){
+                    console.log('hover');
+                });
+            })
+            
+            $(".giftbox").mouseleave(function(){
+                mc.trigger("ResetBox", null, {height:'400px'}, function(){
+                    console.log('on mouse out');
                 });
             })
         })
@@ -30,21 +41,22 @@
     <title>MotorCortex Test 4</title>
 </head>
 <body>
-<div class="boxcontainer">
-    <div class="section3 box1">
-    	<span>Box 1</span>
+<div class="advertisement">
+    <div class="title">
+    	<h3>20% Discount</h3>
+    	<article>
+    		Click the gift box below to earn 20% discount
+    	</article>
+	</div>
+    <div class="giftdiv">
+    	<img class="giftbox" src="img/gift.png"/>
+    	 	<div class="emailcontainer">
+    			<input type="email" placeholder="Your Email Address"></input>
+    		</div>
     </div>
-    <div class="section3 box2">
-    	<span>Box 2</span>
-    </div>
-    <div class="section3 box3">
-    	<span>Box 3</span>
-    </div>
-    <div class="section3 box4">
-    	<span>Box 4</span>
-    </div>
+   
 </div>
-    <button id="button">Click me!</button>
+    
 
 </body>
 </html>
