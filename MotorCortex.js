@@ -11,6 +11,9 @@ window.MotroCortex = function(options){
     var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
 
     this.trigger = function(eventName, e, options, callback){
+        if(eventName)
+
+
         if(events.hasOwnProperty(eventName)){
             //console.log('event found');
             events[eventName].fire(e, options, callback);
@@ -131,6 +134,7 @@ window.MotroCortex = function(options){
         this.createAnimationFunction(ownAttrs, callbackFunction);
 
         this.execute = function(e, params){
+            //console.log(e);
             //console.log('executing');
             //console.log(this.selectionFunction());
             this.animationFunction(e, params, callbackFunction);
@@ -197,10 +201,10 @@ window.MotroCortex = function(options){
                 properties.options.complete = function(){callback(e, params);};
                 //console.log(parentProperties);
                 //console.log(this.selectionFunction().length);
-                this.selectionFunction().velocity(properties.attributes, properties.options);
+                this.selectionFunction(properties, e).velocity(properties.attributes, properties.options);
                 //console.log(properties);
             } else {
-                var selectedElements = this.selectionFunction();
+                var selectedElements = this.selectionFunction(properties, e);
                 var CallbackHandler = {
                     numberOfElements: selectedElements.length,
                     numberOfFinished:0,
@@ -414,7 +418,7 @@ window.MotroCortex = function(options){
                             continue;
                         }
                         triggeringElementFunction = function(e){
-                            return not($(e.target));
+                            return $("*").not($(e.target));
                         };
                         triggeringElementFunctionFound = true;
                     } else {
@@ -449,7 +453,7 @@ window.MotroCortex = function(options){
                 if(!triggeringElementFunction){
                     var toreturn = $(filterString);
                 } else {
-                    var toreturn = triggeringElementFunction.filter(filterString);
+                    var toreturn = triggeringElementFunction(e).filter(filterString);
                 }
 
                 if(findString == ''){
