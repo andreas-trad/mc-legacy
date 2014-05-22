@@ -57,9 +57,9 @@ window.MotroCortex = function(options){
     };
 
     /*
-    Creates the Thread object
-    It returns an array containing any extra Threads that might come up during the node analysis.
-    New Threads come up if in the body of the actual Thread's node should be separated in more than one
+     Creates the Thread object
+     It returns an array containing any extra Threads that might come up during the node analysis.
+     New Threads come up if in the body of the actual Thread's node should be separated in more than one
      */
     var Thread = function(selector, node, EventObject, parentProperties, findString){
         if(!parentProperties){
@@ -101,7 +101,7 @@ window.MotroCortex = function(options){
         }
 
         /*
-        first create the base ThreadCollection of the specific node
+         first create the base ThreadCollection of the specific node
          */
         //threadCollections.push(new Thread());
         var callbackFunction = function(){
@@ -230,10 +230,10 @@ window.MotroCortex = function(options){
 
 
     /*
-    gets the selector in the format selectionString:@data-x>2@index=2:eventName
-    and return a function that when executed will return the items to be animated
-    on event trigger.
-    The available possible formats are:
+     gets the selector in the format selectionString:@data-x>2@index=2:eventName
+     and return a function that when executed will return the items to be animated
+     on event trigger.
+     The available possible formats are:
      any valid CSS selection
      triggeringElement
      not(triggeringElement)
