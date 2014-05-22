@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../tests/main.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <script src="../libs/jquery.velocity.min.js"></script>
+
+    <script src="../libs/cssjson.js"></script>
+
+    <script src="../MotorCortex.js"></script>
+
+    <script>
+        var mc = new MotroCortex({
+            debug:true
+        });
+        mc.loadMSS("./mss/test3.mss");
+
+        $(document).ready(function(){
+            $("#button").click(function(){
+                //alert('clicked');
+                mc.trigger("Puzzle", null, {height:'400px'}, function(){
+                    console.log('finished');
+                });
+            })
+        })
+
+    </script>
+
+    <title>MotorCortex Test 2</title>
+</head>
+<body>
+<div class="boxcontainer">
+    <div class="section3 box1">
+    	<span>Box 1</span>
+    </div>
+    <div class="section3 box2">
+    	<span>Box 2</span>
+    </div>
+    <div class="section3 box3">
+    	<span>Box 3</span>
+    </div>
+    <div class="section3 box4">
+    	<span>Box 4</span>
+    </div>
+</div>
+    <button id="button">Click me!</button>
+
+</body>
+</html>

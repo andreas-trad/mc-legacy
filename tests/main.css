@@ -41,3 +41,51 @@
 	position:relative;
 	top:40px;
 }
+
+.boxcontainer
+{
+	height:220px;
+	width:220px;
+	float:left;
+	position:relative;
+}
+
+.boxcontainer .section3
+{
+	width:100px;
+	height:100px;
+	display:block;
+	margin-right:10px;
+	margin-bottom:10px;
+	position:relative;
+	float:left;
+	text-align:center;
+}
+
+.boxcontainer .box1
+{
+	background-color:#E8487F;
+}
+
+.boxcontainer .box2
+{
+	background-color:#19376A;
+}
+
+.boxcontainer .box3
+{
+	background-color:#94DAF0;
+}
+
+.boxcontainer .box4
+{
+	background-color:#01B6AD;
+}
+
+.boxcontainer .section3 span
+{
+	color:white;
+	position:relative;
+	top:40px;
+	font-weight:bold;
+}
