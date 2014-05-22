@@ -18,7 +18,7 @@
 
         $(document).ready(function(){
             $("#button").click(function(){
-                //alert('clicked');
+                $("#button").fadeOut();
                 mc.trigger("Puzzle", null, {height:'400px'}, function(){
                     console.log('finished');
                 });

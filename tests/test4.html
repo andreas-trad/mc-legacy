@@ -14,11 +14,12 @@
         var mc = new MotroCortex({
             debug:true
         });
-        mc.loadMSS("./mss/test2.mss");
+        mc.loadMSS("./mss/test4.mss");
 
         $(document).ready(function(){
             $("#button").click(function(){
-                mc.trigger("Circles", null, {height:'400px'}, function(){
+                //alert('clicked');
+                mc.trigger("Advertisement", null, {height:'400px'}, function(){
                     console.log('finished');
                 });
             })
@@ -26,21 +27,21 @@
 
     </script>
 
-    <title>MotorCortex Test 2</title>
+    <title>MotorCortex Test 4</title>
 </head>
 <body>
-<div class="container">
-    <div class="section2" duration="400">
-    	<span>Circle 1</span>
+<div class="boxcontainer">
+    <div class="section3 box1">
+    	<span>Box 1</span>
     </div>
-    <div class="section2" duration="600">
-    	<span>Circle 2</span>
+    <div class="section3 box2">
+    	<span>Box 2</span>
     </div>
-    <div class="section2" duration="1000">
-    	<span>Circle 3</span>
+    <div class="section3 box3">
+    	<span>Box 3</span>
     </div>
-    <div class="section2" duration="1600">
-    	<span>Circle 4</span>
+    <div class="section3 box4">
+    	<span>Box 4</span>
     </div>
 </div>
     <button id="button">Click me!</button>
