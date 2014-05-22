@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../tests/main.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <script src="../libs/jquery.velocity.min.js"></script>
+
+    <script src="../libs/cssjson.js"></script>
+
+    <script src="../MotorCortex.js"></script>
+
+    <script>
+        var mc = new MotroCortex({
+            debug:true
+        });
+        mc.loadMSS("./mss/test5.mss");
+
+        $(document).ready(function(){
+            setTimeout(function(){
+                mc.trigger("Loop", null, {height:'400px'}, function(){
+                    console.log('advertise');
+                
+            	});
+            },2000);
+        })
+
+    </script>
+
+    <title>MotorCortex Test 5</title>
+</head>
+<body>
+<div class="loopad">
+	<div class="leftimage">
+		<img src="img/cat.png"/>
+	</div>
+	<div class="textcenter">
+		<h1>BestPetShop.com</h1>
+	</div>
+	<div class="rightimage">
+		<img src="img/dog.png"/>
+	</div>
+</div>
+
+
+
+</body>
+</html>

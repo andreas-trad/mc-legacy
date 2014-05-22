@@ -176,4 +176,48 @@
 	cursor:pointer;
 }
 
+.loopad
+{
+	width:800px;
+	height:130px;
+	position:relative;
+	left:30px;
+	top:30px;
+	float:left;
+	background-color:#D23641;
+	text-align:center;
+}
 
+.loopad .leftimage
+{
+	float:left;
+	position:relative;
+	width:130px;
+	padding-left:5px;
+	padding-right:5px;
+	height:100%;
+}
+
+
+.loopad .textcenter
+{
+	float:left;
+	width:520px;
+	position:relative;
+	height:100%;
+}
+
+.loopad .textcenter h1
+{
+	color:white;
+}
+
+.loopad .rightimage
+{	
+	float:left;
+	width:130px;
+	padding-left:5px;
+	padding-right:5px;
+	height:100%;
+	position:relative;
+}
