@@ -1,11 +1,13 @@
 @fastTranformation:400;
 
-.section1:triggeringElement:showPososta{
+.section1:showPososta{
     backgroundColorBlue: @domel.data-pososto;
     backgroundColorGreen: @domel.data-pososto;
     duration:@domel.duration;
     width:@domel.data-pososto;
     easing: swing;
+    <#execInnerCallback>;
+    <#execInnerCallback2>;
 
     complete{
         width:0%;

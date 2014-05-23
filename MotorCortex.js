@@ -9,6 +9,7 @@ window.MotroCortex = function(options){
     var MC = this;
 
     var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
+    //var
 
     this.trigger = function(eventName, e, options, callback){
         var paramsOK = true;
@@ -37,14 +38,14 @@ window.MotroCortex = function(options){
                                     if(typeof arguments[3] === "function"){
                                         u_callback = arguments[3];
                                     } else {
-                                        MC.log("error", "Unrecognized type of 4th parameter on trigger function. Function expected, " + typeof arguments[3] + " passed.");
+                                        MC.log("error", "Unrecognized type of 4th parameter on trigger function of event " + eventName + ". Function expected, " + typeof arguments[3] + " passed.");
                                         paramsOK = false;
                                     }
                                 }
                             } else if(typeof arguments[2] === "function"){
                                 u_callback = arguments[2];
                             } else { // 3rd argument was neither an object nor a function
-                                MC.log("error", "Unrecognized type of 3rd parameter on trigger function. Object or Function expected, " + typeof arguments[2] + " passed.");
+                                MC.log("error", "Unrecognized type of 3rd parameter on trigger function of event " + eventName + ". Object or Function expected, " + typeof arguments[2] + " passed.");
                                 paramsOK = false;
                             }
                         }
@@ -52,7 +53,7 @@ window.MotroCortex = function(options){
                         u_options = arguments[1];
                         if(arguments.length > 2){
                             if(typeof arguments[2] != "function"){ // the 2nd parameter was not the event object, it was an object though so it has been considered as the options one. Thought the following parameter it wasn't a function as expected
-                                MC.log("error", "Unrecognized type of 3rd parameter on trigger function. Function expected, " + typeof arguments[2] + " passed.");
+                                MC.log("error", "Unrecognized type of 3rd parameter on trigger function of event " + eventName + ". Function expected, " + typeof arguments[2] + " passed.");
                                 paramsOK = false;
                             } else {
                                 u_callback = arguments[2];
@@ -62,7 +63,7 @@ window.MotroCortex = function(options){
                 } else if(typeof arguments[1] === "function"){
                     u_callback = arguments[1];
                 } else {
-                    MC.log("error", "Unrecognized type of 2nd parameter on trigger function. Object or Function expected, " + typeof arguments[1] + " passed.");
+                    MC.log("error", "Unrecognized type of 2nd parameter on trigger function of event " + eventName + ". Object or Function expected, " + typeof arguments[1] + " passed.");
                     paramsOK = false;
                 }
             }
@@ -90,6 +91,7 @@ window.MotroCortex = function(options){
     }
 
     var compile = function(topNode, callback){
+        //console.log(topNode);
         for(var property in topNode.attributes){
             var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.\-\_]*?/);
 
@@ -596,7 +598,7 @@ window.MotroCortex = function(options){
 
             animationEnded: function(){
                 this.numberOfExecutedLeafs+=1;
-                console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
+                //console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
                 if(this.numberOfExecutedLeafs == this.numberOfThreads){
                     this.callbackFunction();
                 }
