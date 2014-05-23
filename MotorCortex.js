@@ -11,6 +11,9 @@ window.MotroCortex = function(options){
     var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
 
     this.trigger = function(eventName, e, options, callback){
+        //if(eventName)
+
+
         if(events.hasOwnProperty(eventName)){
             //console.log('event found');
             events[eventName].fire(e, options, callback);
@@ -19,7 +22,7 @@ window.MotroCortex = function(options){
         }
     }
 
-    var compile = function(topNode){
+    var compile = function(topNode, callback){
         for(var property in topNode.attributes){
             var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.\-\_]*?/);
 
@@ -54,12 +57,14 @@ window.MotroCortex = function(options){
                 }
             }
         }
+
+        callback();
     };
 
     /*
-    Creates the Thread object
-    It returns an array containing any extra Threads that might come up during the node analysis.
-    New Threads come up if in the body of the actual Thread's node should be separated in more than one
+     Creates the Thread object
+     It returns an array containing any extra Threads that might come up during the node analysis.
+     New Threads come up if in the body of the actual Thread's node should be separated in more than one
      */
     var Thread = function(selector, node, EventObject, parentProperties, findString){
         if(!parentProperties){
@@ -101,7 +106,7 @@ window.MotroCortex = function(options){
         }
 
         /*
-        first create the base ThreadCollection of the specific node
+         first create the base ThreadCollection of the specific node
          */
         //threadCollections.push(new Thread());
         var callbackFunction = function(){
@@ -131,6 +136,7 @@ window.MotroCortex = function(options){
         this.createAnimationFunction(ownAttrs, callbackFunction);
 
         this.execute = function(e, params){
+            //console.log(e);
             //console.log('executing');
             //console.log(this.selectionFunction());
             this.animationFunction(e, params, callbackFunction);
@@ -197,10 +203,10 @@ window.MotroCortex = function(options){
                 properties.options.complete = function(){callback(e, params);};
                 //console.log(parentProperties);
                 //console.log(this.selectionFunction().length);
-                this.selectionFunction().velocity(properties.attributes, properties.options);
+                this.selectionFunction(properties, e).velocity(properties.attributes, properties.options);
                 //console.log(properties);
             } else {
-                var selectedElements = this.selectionFunction();
+                var selectedElements = this.selectionFunction(properties, e);
                 var CallbackHandler = {
                     numberOfElements: selectedElements.length,
                     numberOfFinished:0,
@@ -230,10 +236,10 @@ window.MotroCortex = function(options){
 
 
     /*
-    gets the selector in the format selectionString:@data-x>2@index=2:eventName
-    and return a function that when executed will return the items to be animated
-    on event trigger.
-    The available possible formats are:
+     gets the selector in the format selectionString:@data-x>2@index=2:eventName
+     and return a function that when executed will return the items to be animated
+     on event trigger.
+     The available possible formats are:
      any valid CSS selection
      triggeringElement
      not(triggeringElement)
@@ -414,7 +420,7 @@ window.MotroCortex = function(options){
                             continue;
                         }
                         triggeringElementFunction = function(e){
-                            return not($(e.target));
+                            return $("*").not($(e.target));
                         };
                         triggeringElementFunctionFound = true;
                     } else {
@@ -449,7 +455,7 @@ window.MotroCortex = function(options){
                 if(!triggeringElementFunction){
                     var toreturn = $(filterString);
                 } else {
-                    var toreturn = triggeringElementFunction.filter(filterString);
+                    var toreturn = triggeringElementFunction(e).filter(filterString);
                 }
 
                 if(findString == ''){
@@ -716,7 +722,7 @@ window.MotroCortex = function(options){
     /** This function is used for loading the MSS files and initiate the MotorCortex functionality
      * @param {Array} or {String}
      */
-    this.loadMSS = function(files){
+    this.loadMSS = function(files, callback){
         var that = this;
 
         if(!window.jQuery){
@@ -740,6 +746,19 @@ window.MotroCortex = function(options){
         }
 
         var filesLength = filesToScan.length;
+
+        var LoadCallbackHandler = {
+            totalLoaded:0,
+
+            fileLoaded: function(){
+                LoadCallbackHandler.totalLoaded += 1;
+
+                if(LoadCallbackHandler.totalLoaded === filesLength){
+                    callback();
+                }
+            }
+        };
+
         for(var i=0; i<filesLength; i++){
             var currentlyScanning = filesToScan[i];
             $.ajax({
@@ -748,7 +767,7 @@ window.MotroCortex = function(options){
                 async: true,
                 success:function(cssString){
                     var json = CMSPARSER.toJSON(cssString);
-                    compile(json);
+                    compile(json, LoadCallbackHandler.fileLoaded);
                 },
                 error:function(err, textStatus, errorThrown){
                     that.log("error", "The MSS file " + currentlyScanning + " seems to be missing", errorThrown);
