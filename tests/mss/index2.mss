@@ -1,6 +1,6 @@
 @fastTranformation:400;
 
-.section1:showPososta{
+.section1:triggeringElement:showPososta{
     backgroundColorBlue: @domel.data-pososto;
     backgroundColorGreen: @domel.data-pososto;
     duration:@domel.duration;
@@ -9,7 +9,7 @@
 
     complete{
         width:0%;
-        duration:1000;
+        duration:@params.duration;
         img{
             rotateZ: 360deg;
             duration:3000;

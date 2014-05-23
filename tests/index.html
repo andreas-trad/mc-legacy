@@ -13,19 +13,19 @@
         var mc = new MotroCortex({
             debug:true
         });
-        mc.loadMSS(["./mss/index2.mss", "./mss/index.mss"], function(){
-            
-            mc.trigger("showPososta", null, {height:'400px'}, function(){
-                console.log('finished');
-            });
 
-            //console.log('x');
-        });
 
         $(document).ready(function(){
-            //console.log('doc ready');
-                //alert('clicked');
+            mc.loadMSS(["./mss/index2.mss", "./mss/index.mss"], function(){
+                $("#start").click(function(e){
+                    //var process = mc.trigger({});
 
+                    var process = mc.trigger("showPososta", {duration:1000}, function(){
+                        console.log('finished');
+                    });
+                });
+                //console.log('x');
+            });
         })
 
     </script>
@@ -39,7 +39,8 @@
     <div class="section1" data-pososto="35%" duration="800"></div>
     <div class="section1" data-pososto="22%" duration="1600"></div>
 </div>
-    <button id="button">Click me!</button>
+    <button id="start">Start!</button>
+    <button id="stop">Stop!</button>
 
 </body>
 </html>

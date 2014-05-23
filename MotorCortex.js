@@ -11,15 +11,82 @@ window.MotroCortex = function(options){
     var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
 
     this.trigger = function(eventName, e, options, callback){
-        //if(eventName)
+        var paramsOK = true;
+        var execProcess;
 
+        var u_event, u_options, u_callback;
 
-        if(events.hasOwnProperty(eventName)){
-            //console.log('event found');
-            events[eventName].fire(e, options, callback);
+        if(arguments.length === 0){
+            MC.log("error", "You must always include the event name to be triggered when invoking the MotorCortex.trigger function, as the first parameter in string format");
+            execProcess = new ExecutionProcess(null);
+            paramsOK = false;
         } else {
-            MC.log("error", "The event with name " + eventName + " has not been defined in any of the MSS files. It will be ignored!");
+            if(typeof arguments[0] != "string"){
+                MC.log("error", "The first argument of the trigger function should always be a string representing the name of the event to be triggered. "
+                    + typeof arguments[0] + " passed on call.");
+                execProcess = new ExecutionProcess(null);
+                paramsOK = false;
+            } else if(arguments.length > 1) {
+                if(typeof arguments[1] === "object" && arguments[1] != null){
+                    if(arguments[1].target){
+                        u_event = arguments[1];
+                        if(arguments.length > 2){
+                            if(typeof arguments[2] === "object" && arguments[2] != null){
+                                u_options = arguments[2];
+                                if(arguments.length > 3){
+                                    if(typeof arguments[3] === "function"){
+                                        u_callback = arguments[3];
+                                    } else {
+                                        MC.log("error", "Unrecognized type of 4th parameter on trigger function. Function expected, " + typeof arguments[3] + " passed.");
+                                        paramsOK = false;
+                                    }
+                                }
+                            } else if(typeof arguments[2] === "function"){
+                                u_callback = arguments[2];
+                            } else { // 3rd argument was neither an object nor a function
+                                MC.log("error", "Unrecognized type of 3rd parameter on trigger function. Object or Function expected, " + typeof arguments[2] + " passed.");
+                                paramsOK = false;
+                            }
+                        }
+                    } else { // 2nd argument is object but not the event one
+                        u_options = arguments[1];
+                        if(arguments.length > 2){
+                            if(typeof arguments[2] != "function"){ // the 2nd parameter was not the event object, it was an object though so it has been considered as the options one. Thought the following parameter it wasn't a function as expected
+                                MC.log("error", "Unrecognized type of 3rd parameter on trigger function. Function expected, " + typeof arguments[2] + " passed.");
+                                paramsOK = false;
+                            } else {
+                                u_callback = arguments[2];
+                            }
+                        }
+                    }
+                } else if(typeof arguments[1] === "function"){
+                    u_callback = arguments[1];
+                } else {
+                    MC.log("error", "Unrecognized type of 2nd parameter on trigger function. Object or Function expected, " + typeof arguments[1] + " passed.");
+                    paramsOK = false;
+                }
+            }
         }
+
+        if(!u_options){
+            u_options = {};
+        }
+        if(!u_callback){
+            u_callback = function(){};
+        }
+
+        if(paramsOK){
+            if(events.hasOwnProperty(eventName)){
+                //console.log('event found');
+                execProcess = new ExecutionProcess(events[eventName]);
+                events[eventName].fire(u_event, u_options, u_callback);
+            } else {
+                execProcess = new ExecutionProcess(null);
+                MC.log("error", "The event with name " + eventName + " has not been defined in any of the MSS files. It will be ignored!");
+            }
+        }
+
+        return execProcess;
     }
 
     var compile = function(topNode, callback){
@@ -59,6 +126,17 @@ window.MotroCortex = function(options){
         }
 
         callback();
+    };
+
+
+    var ExecutionProcess = function(event){
+        this.stop = function(){
+            if(event){
+                event.stop();
+            } else {
+                MC.log("error", "You tried to stop a process that has not been executed.");
+            }
+        }
     };
 
     /*
@@ -145,7 +223,11 @@ window.MotroCortex = function(options){
     };
 
 
-
+    /*
+        Creates the animationFunction of the Thread.
+        The animationFunction (during runtime) picks all the elements that should be animated invoking the already
+        baked "selectionFunction" of the Thread and executes animations according to the parameters.
+     */
     Thread.prototype.createAnimationFunction = function(properties){
         var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*$/);
         var domelRegex = new RegExp(/^@domel\.[a-zA-Z0-9\-\_]*$/);
@@ -203,6 +285,7 @@ window.MotroCortex = function(options){
                 properties.options.complete = function(){callback(e, params);};
                 //console.log(parentProperties);
                 //console.log(this.selectionFunction().length);
+                var animatedElements = this.selectionFunction(properties, e);
                 this.selectionFunction(properties, e).velocity(properties.attributes, properties.options);
                 //console.log(properties);
             } else {
@@ -411,7 +494,12 @@ window.MotroCortex = function(options){
                             continue;
                         }
                         triggeringElementFunction = function(e){
-                            return $(e.target);
+                            if(e){
+                                return $(e.target);
+                            } else {
+                                MC.log("error", "You have included the 'triggeringElement' directive in your selection string on MSS, though you didn't pass the event object on the trigger function. The directive will be ignored");
+                                return $("*");
+                            }
                         };
                         triggeringElementFunctionFound = true;
                     } else if(selectorArray[i].replace(/ +?/g, '') == "not(triggeringElement)"){
@@ -420,7 +508,12 @@ window.MotroCortex = function(options){
                             continue;
                         }
                         triggeringElementFunction = function(e){
-                            return $("*").not($(e.target));
+                            if(e){
+                                return $("*").not($(e.target));
+                            } else {
+                                MC.log("error", "You have included the 'triggeringElement' directive in your selection string on MSS, though you didn't pass the event object on the trigger function. The directive will be ignored");
+                                return $("*");
+                            }
                         };
                         triggeringElementFunctionFound = true;
                     } else {
@@ -536,7 +629,9 @@ window.MotroCortex = function(options){
         }
     };
 
+    Event.prototype.stop = function(){
 
+    };
 
 
 
