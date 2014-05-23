@@ -1,3 +1,6 @@
+/* html5doctor.com Reset v1.6.1 - http://cssreset.com */
+html,body,div,span,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,sub,sup,var,b,i,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,figcaption,figure,footer,header,hgroup,menu,nav,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}nav ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}a{margin:0;padding:0;font-size:100%;vertical-align:baseline;background:transparent}ins{background-color:#ff9;color:#000;text-decoration:none}mark{background-color:#ff9;color:#000;font-style:italic;font-weight:bold}del{text-decoration:line-through}abbr[title],dfn[title]{border-bottom:1px dotted;cursor:help}table{border-collapse:collapse;border-spacing:0}hr{display:block;height:1px;border:0;border-top:1px solid #ccc;margin:1em 0;padding:0}input,select{vertical-align:middle}
+
 *
 {
 	font-family: 'Lato', sans-serif;
@@ -184,6 +187,7 @@
 	left:30px;
 	top:30px;
 	float:left;
+	overflow:hidden;
 	background-color:#D23641;
 	text-align:center;
 }
@@ -198,6 +202,34 @@
 	height:100%;
 }
 
+.loopad .leftimage .zzz ul
+{
+	list-style:none;
+	position:absolute;
+	cursor:default;
+	top:5px;
+	left:100px;
+	width:20px;
+	color:#FDEDD0;
+	font-weight:bold;
+}
+
+.loopad .leftimage .zzz ul li:first-child
+{
+	margin-left:15px;
+	font-size:100%;
+}
+
+.loopad .leftimage .zzz ul li:nth-child(2)
+{
+	font-size:70%;
+}
+
+.loopad .leftimage .zzz ul li:last-child
+{
+	margin-left:-10px;
+	font-size:50%;
+}
 
 .loopad .textcenter
 {
@@ -210,7 +242,84 @@
 .loopad .textcenter h1
 {
 	color:white;
+	text-align:center;
+	width:100%;
+	font-size:2em;
+	margin-top:10px;
+	margin-bottom:35px;
 }
+
+.loopad .textcenter .goods span
+{
+	z-index:500;
+	font-size:1em;
+	font-weight:bold;
+	background-color:#13A1CB;
+	padding:5px;
+	color:white;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	-webkit-box-shadow: 3px 3px 0 0 #000;
+	box-shadow: 3px 3px 0 0 #000;
+	opacity:0;
+}
+
+.loopad .textcenter .goods span:first-child
+{
+	position:absolute;
+	left:155px;
+	top:45px;
+}
+
+.loopad .textcenter .goods span:nth-child(2)
+{
+	position:absolute;
+	top:45px;
+	left:240px;
+}
+
+.loopad .textcenter .goods span:nth-child(3)
+{
+	position:absolute;
+	top:45px;
+	left:318px;
+}
+
+.loopad .textcenter .goods ul
+{
+	list-style:none;
+	margin-left:0;
+	text-align:center;
+	position:relative;
+}
+
+.loopad .textcenter .goods ul li
+{
+	display:inline;
+	margin: 0 30px 0 0;
+	opacity:0;
+}
+
+.loopad .textcenter .goods ul li:last-child
+{
+	margin:0;
+}
+
+.loopad .textcenter .boxcat
+{
+	position:absolute;
+	top:-200px;
+}
+
+.loopad .textcenter .delivery
+{
+	position:absolute;
+	bottom:-200px;
+	left:150px;
+	z-index:600;
+}
+
 
 .loopad .rightimage
 {	
@@ -220,4 +329,12 @@
 	padding-right:5px;
 	height:100%;
 	position:relative;
+}
+
+.loopad .rightimage .drop
+{
+	position:absolute;
+	top:55px;
+	right:53px;
+	
 }
