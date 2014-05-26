@@ -8,7 +8,7 @@ window.MotroCortex = function(options){
 
     var MC = this;
 
-    var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
+    var optionsNames = ["duration", "easing", "delay", "complete", "loop-overall"];
     //var
 
     this.trigger = function(eventName, e, options, callback){
@@ -118,7 +118,11 @@ window.MotroCortex = function(options){
                     " separated by the ':' character.");
             } else {
                 if(!events.hasOwnProperty(selectorArray[selectorArray.length - 1])){
-                    var event = new Event();
+                    var eventLoops = 1;
+                    if(topNode.children[property].attributes.hasOwnProperty('loop-overall')){
+                        eventLoops = topNode.children[property].attributes['loop-overall'];
+                    }
+                    var event = new Event(eventLoops);
                     event.addThread(selectorArray, topNode.children[property]);
                     events[selectorArray[selectorArray.length - 1]] = event;
                 } else {
@@ -147,6 +151,8 @@ window.MotroCortex = function(options){
      New Threads come up if in the body of the actual Thread's node should be separated in more than one
      */
     var Thread = function(selector, node, EventObject, parentProperties, findString){
+        this.loops = 1;
+
         if(!parentProperties){
             parentProperties = {
                 attributes:{},
@@ -178,7 +184,11 @@ window.MotroCortex = function(options){
             }
 
             if(optionsNames.indexOf(property) >= 0){
-                ownAttrs.options[property] = node.attributes[property];
+                if(property !== "loop-overall"){
+                    ownAttrs.options[property] = node.attributes[property];
+                } else {
+                    this.loops = node.attributes[property];
+                }
             } else {
                 //console.log(property);
                 ownAttrs.attributes[property] = node.attributes[property];
@@ -201,7 +211,12 @@ window.MotroCortex = function(options){
             if(childName != "complete"){
                 EventObject.addReadyThread(new Thread(this.selectionFunction, node.children[childName], EventObject, ownAttrs, childName));
             } else {
-                var nestedEvent = new Event();
+                var eventLoops = 1;
+                if(node.children[childName].attributes.hasOwnProperty('loop-overall')){
+                    eventLoops = node.children[childName].attributes['loop-overall'];
+                }
+
+                var nestedEvent = new Event(eventLoops);
                 nestedEvent.addReadyThread(new Thread(this.selectionFunction, node.children.complete, nestedEvent, ownAttrs));
                 callbackFunction = function(e, params){
                     var callback = function(){
@@ -215,20 +230,21 @@ window.MotroCortex = function(options){
 
         this.createAnimationFunction(ownAttrs, callbackFunction);
 
+
         this.execute = function(e, params){
             //console.log(e);
             //console.log('executing');
             //console.log(this.selectionFunction());
             this.animationFunction(e, params, callbackFunction);
-        }
+        };
 
     };
 
 
     /*
-        Creates the animationFunction of the Thread.
-        The animationFunction (during runtime) picks all the elements that should be animated invoking the already
-        baked "selectionFunction" of the Thread and executes animations according to the parameters.
+     Creates the animationFunction of the Thread.
+     The animationFunction (during runtime) picks all the elements that should be animated invoking the already
+     baked "selectionFunction" of the Thread and executes animations according to the parameters.
      */
     Thread.prototype.createAnimationFunction = function(properties){
         var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*$/);
@@ -571,7 +587,13 @@ window.MotroCortex = function(options){
 
     };
 
-    var Event = function(){
+    var Event = function(loops){
+        if(!loops){
+            loops = 1;
+        }
+
+        //console.log('event is going to loop ' + loops + ' times')
+
         this.threads = [];
 
         this.addTheThread = function(selector, node){
@@ -582,25 +604,44 @@ window.MotroCortex = function(options){
             this.threads.push(thread);
         }
 
+
+        var that = this;
         this.CallbackHandler = {
             numberOfExecutedLeafs: 0,
+            numberOfLoopsCompleted: 0,
 
-            init: function(numberOfThreads, callback){
+            init: function(numberOfThreads, callback, e, options){
                 this.numberOfThreads = numberOfThreads;
                 this.callbackFunction = callback;
+                this.e = e;
+                this.options = options;
                 return this;
             },
 
-            reset: function(){
+            reset: function(preserveLoop){
+                if(!preserveLoop){
+                    this.resetLoop();
+                    this.numberOfLoopsCompleted = 0;
+                    return this;
+                }
+            },
+
+            resetLoop: function(){
                 this.numberOfExecutedLeafs = 0;
-                return this;
             },
 
             animationEnded: function(){
                 this.numberOfExecutedLeafs+=1;
                 //console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
                 if(this.numberOfExecutedLeafs == this.numberOfThreads){
-                    this.callbackFunction();
+                    this.numberOfLoopsCompleted += 1;
+                    //console.log('logged ' + this.numberOfLoopsCompleted + ' out of ' + loops);
+                    if(this.numberOfLoopsCompleted == loops){
+                        this.callbackFunction();
+                    } else {
+                        this.resetLoop();
+                        that.fire(this.e, this.options, this.callbackFunction, true);
+                    }
                 }
             }
         };
@@ -616,14 +657,14 @@ window.MotroCortex = function(options){
         this.addTheThread(selector, node);
     };
 
-    Event.prototype.fire = function(e, options, callback){
+    Event.prototype.fire = function(e, options, callback, preserveLoop){
         if(!callback){
             callback = function(){};
         }
         if(!options){
             options = {};
         }
-        this.CallbackHandler.init(this.threads.length, callback).reset();
+        this.CallbackHandler.init(this.threads.length, callback, e, options, this.fire).reset(preserveLoop);
 
         for(var i=0; i<this.threads.length; i++){
             //console.log('firing thread');

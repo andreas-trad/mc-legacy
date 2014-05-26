@@ -17,11 +17,14 @@
             duration:3000;
             complete{
                 height:500px;
+                complete{
+                    delay:1000;
+                    height:50px;
+                    rotateZ: 0deg;
+                }
             }
         }
-        complete{
-            width:150px;
-            duration:1000;
-        }
+
     }
+    loop-overall:6;
 }
