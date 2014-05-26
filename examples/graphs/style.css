@@ -1,0 +1,32 @@
+.contents{
+    width:90%;
+    height: 600px;
+}
+
+.bar{
+    width:10%;
+    height: 600px;
+    position: relative;
+    float: left;
+}
+
+.bar .percentage{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    height: 0%;
+    background-color: #000;
+}
+
+.bar .number{
+    z-index: 2;
+    opacity:0;
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color:#2d6987;
+    font-size: 24px;
+    font-weight: bold;
+}
