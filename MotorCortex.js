@@ -8,7 +8,7 @@ window.MotroCortex = function(options){
 
     var MC = this;
 
-    var optionsNames = ["duration", "easing", "delay", "complete", "loop-overall"];
+    var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
     //var
 
     this.trigger = function(eventName, e, options, callback){
@@ -119,8 +119,8 @@ window.MotroCortex = function(options){
             } else {
                 if(!events.hasOwnProperty(selectorArray[selectorArray.length - 1])){
                     var eventLoops = 1;
-                    if(topNode.children[property].attributes.hasOwnProperty('loop-overall')){
-                        eventLoops = topNode.children[property].attributes['loop-overall'];
+                    if(topNode.children[property].attributes.hasOwnProperty('loop')){
+                        eventLoops = topNode.children[property].attributes['loop'];
                     }
                     var event = new Event(eventLoops);
                     event.addThread(selectorArray, topNode.children[property]);
@@ -184,7 +184,7 @@ window.MotroCortex = function(options){
             }
 
             if(optionsNames.indexOf(property) >= 0){
-                if(property !== "loop-overall"){
+                if(property !== "loop"){
                     ownAttrs.options[property] = node.attributes[property];
                 } else {
                     this.loops = node.attributes[property];
@@ -212,8 +212,8 @@ window.MotroCortex = function(options){
                 EventObject.addReadyThread(new Thread(this.selectionFunction, node.children[childName], EventObject, ownAttrs, childName));
             } else {
                 var eventLoops = 1;
-                if(node.children[childName].attributes.hasOwnProperty('loop-overall')){
-                    eventLoops = node.children[childName].attributes['loop-overall'];
+                if(node.children[childName].attributes.hasOwnProperty('loop')){
+                    eventLoops = node.children[childName].attributes['loop'];
                 }
 
                 var nestedEvent = new Event(eventLoops);
