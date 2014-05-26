@@ -255,6 +255,7 @@ window.MotroCortex = function(options){
             MC.log("error", "The duration has not been defined. The default (0.3s) will be used");
         }
 
+
         this.animationFunction = function(e, params, callback){
             var parametric = false;
             // contains objects of format :
@@ -263,7 +264,10 @@ window.MotroCortex = function(options){
             // byWhichAttr: (the name of the dom element's attribute that will be used)
             var parametrics = [];
 
+            var numberOfAttrs = 0;
+
             for(var property in properties.attributes){
+                numberOfAttrs += 1;
                 if(paramsRegex.exec(properties.attributes[property])){
                     var actualPropName = properties.attributes[property].split(".")[1].trim();
                     if(params.hasOwnProperty(actualPropName)){
@@ -297,6 +301,11 @@ window.MotroCortex = function(options){
                     });
                     parametric = true;
                 }
+            }
+
+            if(numberOfAttrs == 0){
+                callback(e, params);
+                return true;
             }
 
             if(!parametric){
@@ -632,10 +641,10 @@ window.MotroCortex = function(options){
 
             animationEnded: function(){
                 this.numberOfExecutedLeafs+=1;
-                //console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
+                console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
                 if(this.numberOfExecutedLeafs == this.numberOfThreads){
                     this.numberOfLoopsCompleted += 1;
-                    //console.log('logged ' + this.numberOfLoopsCompleted + ' out of ' + loops);
+                    console.log('logged ' + this.numberOfLoopsCompleted + ' out of ' + loops);
                     if(this.numberOfLoopsCompleted == loops){
                         this.callbackFunction();
                     } else {

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Graphs example</title>
+
+    <link rel="stylesheet" href="./style.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="../libs/jquery.velocity.min.js"></script>
+
+    <script src="../../MotorCortex.js"></script>
+</head>
+<body>
+    <div class="contents">
+        <div class="bar">
+            <div class="number" data-duration="150">25%</div>
+            <div class="percentage"  data-percentage="25%" data-duration="150"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="300">39%</div>
+            <div class="percentage"  data-percentage="39%" data-duration="300"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="450">65%</div>
+            <div class="percentage"  data-percentage="55%" data-duration="450"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="600">90%</div>
+            <div class="percentage"  data-percentage="90%" data-duration="600"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="750">55%</div>
+            <div class="percentage"  data-percentage="55%" data-duration="750"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="850">47%</div>
+            <div class="percentage"  data-percentage="47%" data-duration="850"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="950">25%</div>
+            <div class="percentage"  data-percentage="25%" data-duration="950"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="1020">11%</div>
+            <div class="percentage"  data-percentage="11%" data-duration="1020"></div>
+        </div>
+        <div class="bar">
+            <div class="number" data-duration="1090">69%</div>
+            <div class="percentage"  data-percentage="69%" data-duration="1090"></div>
+        </div>
+        <div class="bar">
+            <div class="biggest number" data-duration="1150">100%</div>
+            <div class="percentage"  data-percentage="100%" data-duration="1150"></div>
+        </div>
+    </div>
+
+    <script>
+        var mc = new MotroCortex();
+        mc.loadMSS('./mc.mss', function(){
+            mc.trigger("showBars", function(){
+                mc.trigger('highlight');
+            });
+        });
+    </script>
+
+</body>
+</html>
