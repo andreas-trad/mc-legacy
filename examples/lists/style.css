@@ -1,0 +1,16 @@
+.listContainer{
+    width:400px;
+    height: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:20px;
+}
+
+.listContainer .listitem{
+    width:386px;
+    padding: 6px;
+    height: 32px;
+    margin-bottom: 4px;
+    border: 1px solid #2d6987;
+    cursor:pointer;
+}
