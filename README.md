@@ -27,7 +27,7 @@ MotrorCortex.js animations extremely smooth.
 The MotorCortex library depends on jQuery and velocity.js. velocity.js depends on jQuery too, so you should include these
 two libraries in the jQuery/velocity sequence before including MotorCortex on your page.
 <br/>
-<pre lang="html"><code>
+<pre lang="javascript"><code>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="path/to/jquery.velocity.min.js"></script>
     <script src="path/to/MotorCortex.js"></script>
@@ -45,4 +45,4 @@ files at once using the "loadMSS" function:
 </code></pre>
 <br/>
 loadMSS function takes exactly one parameter. This parameter can be either a string pointing the one and only MSS
-file you want to load or an array of strings, each pointing to a different MSS file.
+file you want to load or an array of strings, each pointing to a different MSS file.g
