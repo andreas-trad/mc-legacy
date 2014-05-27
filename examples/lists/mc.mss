@@ -39,5 +39,4 @@
     backgroundColorBlue:255;
     translateX:0px;
     boxShadowBlur:0em;
-
 }
