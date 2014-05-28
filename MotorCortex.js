@@ -1,3 +1,14 @@
+/*global jQuery */
+/*!
+ * tradpaginator.js 0.7
+ *
+ * Copyright 2014, Andreas Trantidis
+ * atrantidis@gmail.com
+ * Released under the WTFPL license
+ * http://sam.zoy.org/wtfpl/
+ *
+ */
+
 window.MotroCortex = function(options){
     var mc_debug = false;
     if(options){
