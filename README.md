@@ -30,7 +30,7 @@ Released under the <a href="http://sam.zoy.org/wtfpl/" target="_blank">WTFPL</a>
     <li>jQuery</li>
     <li><a href="https://github.com/julianshapiro/velocity" target="_blank">velocity.js</a></li>
 </ul>
-<h2>Wh
+
 
 <h2>The basics</h2>
 MotorCortex.js provides the ability to define / describe animations and (animated) transitions between states through a CSS (or even LESS) - like syntax.
