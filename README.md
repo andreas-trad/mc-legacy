@@ -308,11 +308,10 @@ For example on the following code:<br/>
 the selection part is the expression: <b>.section:myEvent</b>.<br/>
 Selections are executed on nested elements too. For example, consider this MSS code (the selections are highlighted with red color):
 <br/>
-<pre lang="css"><code>
+<pre lang="javascript"><code>
 <span style="color:red">.section:myEvent</span>{
     duration:300;
     top:+=300px;
-
     <span style="color:red">img</span>{
         rotateZ:90deg;
     }
@@ -426,7 +425,6 @@ on our MSS syntax:
 .section:myEvent{
     duration:200;
     left:+=200px;
-
     complete{
         opacity:0;
         duration:300;
@@ -447,7 +445,6 @@ the images that each contains by 90 degrees in 100ms. We can do that using the f
 .section:myEvent{
     duration:300;
     left:200px;
-
     complete{
         img{
             rotateZ:90deg;
