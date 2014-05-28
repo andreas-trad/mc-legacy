@@ -285,11 +285,11 @@ elements' attributes. So, each of them should have this attributes on its tag.
 <br/>
 <b>HTML</b>
 <pre lang="html"><code>
-    <div class="section" data-delay="50" data-top="150"></div>
-    <div class="section" data-delay="100" data-top="200"></div>
-    <div class="section" data-delay="150" data-top="250"></div>
-    <div class="section" data-delay="200" data-top="300"></div>
-    <div class="section" data-delay="250" data-top="350"></div>
+    &lt;div class=&quot;section&quot; data-delay=&quot;50&quot; data-top=&quot;150&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;section&quot; data-delay=&quot;100&quot; data-top=&quot;200&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;section&quot; data-delay=&quot;150&quot; data-top=&quot;250&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;section&quot; data-delay=&quot;200&quot; data-top=&quot;300&quot;&gt;&lt;/div&gt;
+    &lt;div class=&quot;section&quot; data-delay=&quot;250&quot; data-top=&quot;350&quot;&gt;&lt;/div&gt;
 </code></pre><br/>
 
 <h3>Selectors</h3>
