@@ -201,7 +201,7 @@ We could just write:<br/>
 </code></pre><br/>
 With the nested elements capability provided by MotorCortex you can just write:
 <br/>
-<pre lang="less"><code>
+<pre lang="css"><code>
 .section:myEvent{
     duration:300;
     top:+=300px;
@@ -216,7 +216,7 @@ As you can see we've not included the "duration" option on the img scope. Nested
 characteristics from their parents. Though you can always change / overwrite these options if you want. Using the following
 syntax the img elements will animate in 400ms and not in 300:
 <br/>
-<pre lang="less"><code>
+<pre lang="css"><code>
 .section:myEvent{
     duration:300;
     top:+=300px;
@@ -227,3 +227,37 @@ syntax the img elements will animate in 400ms and not in 300:
     }
 }
 </code></pre><br/>
+
+<h3>Runtime parameters</h3>
+As mentioned, we can pass run-time variables through the "trigger" function. These parameters dynamically define (on invocation time)
+the value of selected animation parameters and characteristics.<br/>
+The following MSS code has been written in a way that expects for these dynamic params to be based on "trigger" invocation:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:@params.duration;
+    top:+=(@params.top)px; /* always put in parenthesis dynamic variables (both @globals.xxx and @params.xxx) when you want to follow them by the "px" units */
+}
+</code></pre><br/>
+As you can see in the example we've put in parenthesis the @params.top variable. This is because without the parenthesis the code would look like this:
+<br/>
+<b>wrong syntax!!</b>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:@params.duration;
+    top:+=@params.toppx; /* no way to make clear where the param name ends end if the "px" is part of it or represents the units */
+}
+</code></pre><br/>
+As you can see there is no way to separate the @params.top from the "px" units. This is why and when you should use parentheses when
+working with parametric values.<br/>
+Going back to our example, we've prepared our MSS to accept dynamic parameters from the trigger function. It's time to
+see how this is implemented from the javascript side. A proper way to call the trigger function for this example is the
+following:<br/>
+<pre lang="javascript"><code>
+var mc = new MotorCortex();
+mc.loadMSS('./path/to/my_mss.mss', function(){
+    mc.fire('myEvent', {duration:300, top:250});
+});
+</code></pre>
+By this invocation the transition will execute in 300ms making the .section elements top equals to 250px. <br/>
+Not passing in an expected, from the MSS code, parameter will cause MotorCortex to complete ignore the directive stated on the MSS.
