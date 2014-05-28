@@ -12,6 +12,10 @@
     ],
     "license": "WTFPL",
     "homepage": "https://github.com/andreas-trad/motorcortexjs",
+    "dependencies": {
+        "jquery": "jquery/jquery",
+        "velocity": "julianshapiro/velocity"
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/andreas-trad/motorcortexjs.git"
