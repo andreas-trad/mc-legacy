@@ -2,8 +2,8 @@
 =============
 
 <h2>Intro</h2>
-How would you like to decouple and take all the animations logic of your web apps complete out of your javascript code?<br/>
-How would you like to define your animations in a CSS-like syntax in external files and just trigger events in order to execute them?<br/>
+How would you like to decouple and take all the animations logic, of your web applications, completely out of your javascript code?<br/>
+How would you like to define your animations in a CSS-like syntax on external files and just trigger custom events in order to execute them?<br/>
 If all these sound interesting read on.
 
 <p>
