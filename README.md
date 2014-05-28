@@ -467,7 +467,6 @@ Loops only have true meaning for sequences (when there are "complete" directives
 .section:myEvent{
     duration:200;
     left:200px;
-
     loop:5;
 }
 </code></pre><br/>
@@ -481,12 +480,10 @@ will be executed 4 times:
 .section:myEvent{
     duration:200;
     left:200px;
-
     complete{
         left:0;
         duration:200;
     }
-
     loop:4;
 }
 </code></pre><br/>
