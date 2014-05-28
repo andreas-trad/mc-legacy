@@ -111,11 +111,11 @@ mc.fire(eventName, params, callback);
 mc.fire(eventName, callback);
 </code></pre>
 
-<h3>Animation parameters and options</h3>
+<h3>Animation parameters and characteristics</h3>
 There are two kinds of parameters that we can define for an animation:
 <ul>
     <li><b>The animation parameters</b>: These parameters define the CSS attributes that we want to alter during an animation</li>
-    <li><b>The animation options</b>: These options define the animation characteristics</li>
+    <li><b>The animation characteristics</b>: These options define the animation characteristics</li>
 </ul>
 <h4>Animation parameters</h4>
 The "animation parameters" define the CSS attributes of the selected elements that are going to get animated during an animation.<br/>
@@ -164,3 +164,66 @@ Here is an example:
     top:-=300px;
 }
 </code></pre>
+
+<h3>Globals and nested elements</h3>
+Just like in LESS, MotorCortex supports global variables and nested elements.
+<h4>Globals</h4>
+Global variables are defined in the top of each MSS document and can be used all over it in this manner:<br/>
+<pre lang="css"><code>
+@myGlobalDuration:300;
+@myGlobalTop:300px;
+
+.section:myEvent{
+    duration:@globals.myGlobalDuration;
+    top:@globals.myGlobalTop;
+}
+</code></pre>
+As shown on the example, in order to define a global variable you just define its value using the "@" character as the first
+of the definition string.<br/>
+You can use any of the defined global variables within the MSS file by using the expression:<br/>
+@globals. followed by the global variable name (this time without the precedent "@".
+
+<h4>Nested elements</h4>
+There are occasions that we want to define animations for an element and also, different animation behavior for its nested
+elements. For example, let's suppose that we want to animate the top value of all elements of class "section" and also
+to rotate the images contained to these elements by 90deg.<br/>
+We could just write:<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:300;
+    top:+=300px;
+}
+
+.section img:myEvent{
+    duration:300;
+    rotateZ:90deg;
+}
+</code></pre><br/>
+With the nested elements capability provided by MotorCortex you can just write:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:300;
+    top:+=300px;
+
+    img{
+        /* no need to redefine the duration property. It is inherited from the parent */
+        rotateZ:90deg;
+    }
+}
+</code></pre><br/>
+As you can see we've not included the "duration" option on the img scope. Nested elements automatically inherit the animation
+characteristics from their parents. Though you can always change / overwrite these options if you want. Using the following
+syntax the img elements will animate in 400ms and not in 300:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:300;
+    top:+=300px;
+
+    img{
+        duration:400;
+        rotateZ:90deg;
+    }
+}
+</code></pre><br/>
