@@ -11,6 +11,27 @@ MotorCortex.js aspires to mimic the human brain's motor cortex by providing a ne
 And all this with an easy and straight forward CSS-like syntax and a js API that respects and matches all the modern MV* javascript frameworks.
 </p>
 
+<h2>License</h2>
+Released under the <a href="http://sam.zoy.org/wtfpl/" target="_blank">WTFPL</a> license. Andreas Trantidis <a href="https://twitter.com/AndreasTrantidi" target="_blank">@AndreasTrantidi</a>
+
+<h2>Compatibility and Dependencies</h2>
+<h3>Browser support</h3>
+<ul>
+  <li>Internet Explorer 8+</li>
+  <li>Mozilla Firefox 1.5+</li>
+  <li>Safari 3+</li>
+  <li>Opera 9.5+ (9.01+ as of 1.10)</li>
+  <li>Google Chrome 1.0+</li>
+  <li>iOS 2.0+</li>
+  <li>Opera Mini (to a certain degree)</li>
+</ul>
+<h3>Dependencies</h3>
+<ul>
+    <li>jQuery</li>
+    <li><a href="https://github.com/julianshapiro/velocity" target="_blank">velocity.js</a></li>
+</ul>
+<h2>Wh
+
 <h2>The basics</h2>
 MotorCortex.js provides the ability to define / describe animations and (animated) transitions between states through a CSS (or even LESS) - like syntax.
 <br/>
