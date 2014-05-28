@@ -27,10 +27,10 @@ MotrorCortex.js animations extremely smooth.
 The MotorCortex library depends on jQuery and velocity.js. velocity.js depends on jQuery too, so you should include these
 two libraries in the jQuery/velocity sequence before including MotorCortex on your page.
 <br/>
-<pre lang="javascript"><code>
-    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="path/to/jquery.velocity.min.js"></script>
-    <script src="path/to/MotorCortex.js"></script>
+<pre lang="html"><code>
+&lt;script src=&quot;//code.jquery.com/jquery-1.11.0.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;path/to/jquery.velocity.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;path/to/MotorCortex.js&quot;&gt;&lt;/script&gt;
 </code></pre>
 
 <h2>Loading the MSS files</h2>
@@ -38,11 +38,32 @@ All animations are defined in MSS files. Once you've loaded both the library and
 files at once using the "loadMSS" function:
 <br/>
 <pre lang="javascript"><code>
-    var mc = new MotorCortex();
-    mc.loadMSS('./path/to/my_mss.mss', function(){
-        // here you are sure the MotorCortex loaded and rendered the MSS files
-    });
+var mc = new MotorCortex();
+mc.loadMSS('./path/to/my_mss.mss', function(){
+    // here you are sure the MotorCortex loaded and rendered the MSS files
+});
 </code></pre>
 <br/>
-loadMSS function takes exactly one parameter. This parameter can be either a string pointing the one and only MSS
-file you want to load or an array of strings, each pointing to a different MSS file.g
+loadMSS function takes two parameters. This first parameter can be either a string pointing the one and only MSS
+file you want to load or an array of strings, each pointing to a different MSS file.
+<br/>
+The second parameter is a callback function called when the loading and rendering process finishes.
+
+<h2>MSS syntax</h2>
+<h3>Quick example</h3>
+The following code defines the behavior of the elements of class ".section" and ".section2" when the event with name "myEvent"
+fires:<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:400;
+    top:+=300px;
+}
+
+.section2:myEvent{
+    duration:300;
+    top:-=300px;
+}
+</code></pre>
+<br/>
+This code indicates that when the event with the name "myEvent" fires all elements of class "section" will animate top
+by 300 pixels in 400ms and all elements of class "section2" by 300 pixels in 300ms.
