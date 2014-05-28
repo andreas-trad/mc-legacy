@@ -306,13 +306,13 @@ For example on the following code:<br/>
 }
 </code></pre><br/>
 the selection part is the expression: <b>.section:myEvent</b>.<br/>
-Selections are executed on nested elements too. For example, consider this MSS code (the selections are highlighted with red color):
+Selections are executed on nested elements too. For example, consider this MSS code:
 <br/>
-<pre lang="javascript"><code>
-<span style="color:red!important">.section:myEvent</span>{
+<pre lang="css"><code>
+.section:myEvent{ /* selector */
     duration:300;
     top:+=300px;
-    <span style="color:red!important">img</span>{
+    img{ /* selector */
         rotateZ:90deg;
     }
 }
