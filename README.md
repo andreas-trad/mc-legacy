@@ -201,7 +201,7 @@ We could just write:<br/>
 </code></pre><br/>
 With the nested elements capability provided by MotorCortex you can just write:
 <br/>
-<pre lang="css"><code>
+<pre lang="less"><code>
 .section:myEvent{
     duration:300;
     top:+=300px;
@@ -216,7 +216,7 @@ As you can see we've not included the "duration" option on the img scope. Nested
 characteristics from their parents. Though you can always change / overwrite these options if you want. Using the following
 syntax the img elements will animate in 400ms and not in 300:
 <br/>
-<pre lang="css"><code>
+<pre lang="less"><code>
 .section:myEvent{
     duration:300;
     top:+=300px;
