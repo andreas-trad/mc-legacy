@@ -78,7 +78,7 @@ mc.loadMSS('./path/to/my_mss.mss', function(){
 });
 </code></pre>
 
-<h2>The trigger function</h2>
+<h3>The trigger function</h3>
 The trigger function takes from 1 up to 4 parameters:<br/>
 <ul>
     <li>eventName: the name of the event to trigger</li>
@@ -99,3 +99,31 @@ mc.loadMSS('./path/to/my_mss.mss', function(){
 });
 </code></pre>
 <br/>
+All the following method invocations are valid:<br/>
+<pre lang="javascript"><code>
+mc.fire(eventName);
+mc.fire(eventName, e);
+mc.fire(eventName, e, params);
+mc.fire(eventName, e, params, callback);
+mc.fire(eventName, e, callback);
+mc.fire(eventName, params);
+mc.fire(eventName, params, callback);
+mc.fire(eventName, callback);
+</code></pre>
+
+<h3>Animation parameters and options</h3>
+There are two kinds of parameters that we can define for an animation:
+<ul>
+    <li><b>The animation parameters</b>: These parameters define the CSS attributes that we want to alter during an animation</li>
+    <li><b>The animation options</b>: These options define the animation characteristics</li>
+</ul>
+<h4>Animation parameters</h4>
+MotorCortex.js uses <a href="http://julian.com/research/velocity/" target="_blank">velocity.js</a> as its underlying animation mechanism.
+The animation parameters supported by MotorCortex are identical with the ones supported by velocity.js. In general, these
+parameters are identical with any valid CSS parameter (e.g. width, height, top, left, etc).
+<br/>Though, there are some major differences when it comes to transforms and colors. You can check these two links for info:
+<a href="http://julian.com/research/velocity/#transforms" target="_blank">Supported transforms</a><br/>
+<a href="http://julian.com/research/velocity/#colors" target="_blank">Dealing with colors</a>
+
+
+
