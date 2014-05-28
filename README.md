@@ -118,12 +118,49 @@ There are two kinds of parameters that we can define for an animation:
     <li><b>The animation options</b>: These options define the animation characteristics</li>
 </ul>
 <h4>Animation parameters</h4>
+The "animation parameters" define the CSS attributes of the selected elements that are going to get animated during an animation.<br/>
 MotorCortex.js uses <a href="http://julian.com/research/velocity/" target="_blank">velocity.js</a> as its underlying animation mechanism.
 The animation parameters supported by MotorCortex are identical with the ones supported by velocity.js. In general, these
 parameters are identical with any valid CSS parameter (e.g. width, height, top, left, etc).
-<br/>Though, there are some major differences when it comes to transforms and colors. You can check these two links for info:
+<br/>Though, there are some major differences when it comes to transforms and colors. You can check these two links for more information:<br/>
 <a href="http://julian.com/research/velocity/#transforms" target="_blank">Supported transforms</a><br/>
 <a href="http://julian.com/research/velocity/#colors" target="_blank">Dealing with colors</a>
-
-
-
+<br/>
+Animation parameters can be expressed in absolute values on your MSS files (such as):
+<pre lang="css"><code>
+.section:myEvent{
+    duration:400;
+    top:300px;
+}
+</code></pre>
+, can be followed by any valid unit (such as):
+<ul>
+    <li>%</li>
+    <li>px</li>
+    <li>deg</li>
+    <li>etc</li>
+</ul>
+, can be negative (by using the "-" operator) <br/>
+and can, also be relative by using the proper operators (such as):
+<ul>
+    <li>-=</li>
+    <li>+=</li>
+</ul>
+<h4>Animation characteristics</h4>
+The "animation characteristics" define the characteristics of an animation. The list of the available characteristics is:
+<ul>
+    <li><b>duration</b>: expressed in integer number. Defines the milliseconds that the animation will last</li>
+    <li><b>delay</b>: expressed in integer number. Defines the milliseconds that the animation will delay before starting</li>
+    <li><b>easing</b>: defines the easing of the animation. You can use any value from <a href="http://easings.net/" target="_blank">this list</a>,
+        pass in a four-item array of bezier points. (Refer to <a href="http://cubic-bezier.com/" target="_blank">Cubic-Bezier.com</a>
+        for crafing custom bezier curves.) or use CSS3 named easings ("ease", "ease-in", "ease-out", and "ease-in-out").</li>
+</ul>
+Here is an example:
+<pre lang="css"><code>
+.section:myEvent{
+    duration:400; /* the animation will last 400ms */
+    delay:300; /* the animation will delay 300ms before executing */
+    easing:easeInElastic
+    top:-=300px;
+}
+</code></pre>
