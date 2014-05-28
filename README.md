@@ -309,14 +309,20 @@ the selection part is the expression: <b>.section:myEvent</b>.<br/>
 Selections are executed on nested elements too. For example, consider this MSS code:
 <br/>
 <pre lang="css"><code>
-.section:myEvent{ /* selector */
+.section:myEvent{
     duration:300;
     top:+=300px;
-    img{ /* selector */
+    img{
         rotateZ:90deg;
     }
 }
 </code></pre><br/>
+The selector parts are:
+<ul>
+    <li>.section:myEvent</li>
+    <li>img</li>
+</ul>
+<br/>
 A major difference between nested and top selectors is that on top selectors we <b>always</b> should define the event name.
 On nested selectors we <b>never</b> define the event name. Just the actual selection part.<br/>
 A top selection part has the following format:<br/>
