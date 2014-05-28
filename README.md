@@ -261,3 +261,42 @@ mc.loadMSS('./path/to/my_mss.mss', function(){
 </code></pre>
 By this invocation the transition will execute in 300ms making the .section elements top equals to 250px. <br/>
 Not passing in an expected, from the MSS code, parameter will cause MotorCortex to complete ignore the directive stated on the MSS.
+
+<h3>DOM elements attributes</h3>
+There are occasions that we want each DOM element participating in an animation, to animate according to a specific (own) value.
+This is totally feasible with MotorCortex by using DOM element attributes.<br/>
+Let's consider the following example:
+<br/>
+<b>MSS</b>
+<pre lang="css"><code>
+.section:myEvent{
+    delay:@domel.data-delay;
+    top:+=(@domel.data-top)px; /* always put in parenthesis dynamic variables (both @globals.xxx and @params.xxx) when you want to follow them by the "px" units */
+}
+</code></pre><br/>
+As you can see in the MSS code we've used the @domel.delay and @domel.top directives for the value assignment to the delay and top variables.
+This syntax defines the delay equal to the "data-delay" value of each element of class "section" and that the
+"top" attribute's value will be equal to the "data-top" attribute of each.
+<br/>
+The javascript code is very simple in such an occasion. A simple trigger call is enough.<br/>
+What matters though is the HTML. As mentioned the delay and top values are going to be retrieved from the animated DOM
+elements' attributes. So, each of them should have this attributes on its tag.
+<br/>A proper HTML for the specific example is the following:
+<br/>
+<b>HTML</b>
+<pre lang="html"><code>
+    <div class="section" data-delay="50" data-top="150"></div>
+    <div class="section" data-delay="100" data-top="200"></div>
+    <div class="section" data-delay="150" data-top="250"></div>
+    <div class="section" data-delay="200" data-top="300"></div>
+    <div class="section" data-delay="250" data-top="350"></div>
+</code></pre><br/>
+
+<h3>Selectors</h3>
+
+
+<h3>The "complete" keyword</h3>
+
+<h3>Looping</h3>
+
+<h3>Random values</h3>
