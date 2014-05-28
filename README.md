@@ -417,8 +417,91 @@ From the variable e, that represents the event, MotorCortex will find out and fi
 
 
 <h3>The "complete" keyword</h3>
+You can define sequences of animations using the "complete" keyword. For example, let's assume that we want all elements
+of class "section" to animate left by 200px and then fade out in 300ms when the event with name "myEvent" gets triggered.
+This can easily be done using the "complete" keyword
+on our MSS syntax:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:200;
+    left:+=200px;
+
+    complete{
+        opacity:0;
+        duration:300;
+    }
+}
+</code></pre><br/>
+You can nest as many completes within completes as you want. Also, exactly as on nested elements, the animation characteristics
+are inherited from the parent (and can be overwritten).<br/>
+In cases that you use @domel attributes the complete process runs after ALL the elements have completed the animation.
+The attributes that we define within the complete scope refer to the elements of the parent node. In our example the elements
+of class "section" are the ones that will execute the animation defined on the complete section. <br/>
+So, on the complete section we are still working with the selected items, picked form the parent node selector. A LESS-like
+nested elements definition still applies within the complete section.<br/>
+Example: let's assume we want the elements of class "section" to animate moving to 200px left in 300ms and then rotate all
+the images that each contains by 90 degrees in 100ms. We can do that using the following syntax:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:300;
+    left:200px;
+
+    complete{
+        img{
+            rotateZ:90deg;
+            duration:100;
+        }
+    }
+}
+</code></pre><br/>
 
 
 <h3>Looping</h3>
+MotorCortex MSS syntax provides the "loop" keyword. By assigning a value to the loop attribute of a section, the animation
+loops as many times as the assigned value.<br/>
+Loops only have true meaning for sequences (when there are "complete" directives). For example, consider the following MSS code:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:200;
+    left:200px;
+
+    loop:5;
+}
+</code></pre><br/>
+The first time that the animation will be executed the elements of class "section" will be animated left to 200px. If we
+repeat the same animation step nothing will really happen as the elements will start and end their movement from the exact same
+spot.<br/>
+Loops apply to sections where callbacks have been defined through the "complete" keyword. On our example the whole process (including the callback)
+will be executed 4 times:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:200;
+    left:200px;
+
+    complete{
+        left:0;
+        duration:200;
+    }
+
+    loop:4;
+}
+</code></pre><br/>
 
 <h3>Random values</h3>
+Anywhere in your MSS file you can use the @rand() function provided. The rand function has the following syntax:<br/>
+<pre lang="javascript"><code>
+@rand(min, max)
+</code></pre><br/>
+and returns a random number that's equal or greater than min and less or equal than max. <br/>
+An example of @rand usage is the following:
+<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:@rand(250,350);
+    left:(@rand(100,200))px;
+}
+</code></pre><br/>
