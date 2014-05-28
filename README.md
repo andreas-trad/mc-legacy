@@ -49,7 +49,7 @@ file you want to load or an array of strings, each pointing to a different MSS f
 <br/>
 The second parameter is a callback function called when the loading and rendering process finishes.
 
-<h2>MSS syntax</h2>
+<h2>MSS syntax / Triggering events</h2>
 <h3>Quick example</h3>
 The following code defines the behavior of the elements of class ".section" and ".section2" when the event with name "myEvent"
 fires:<br/>
@@ -67,3 +67,35 @@ fires:<br/>
 <br/>
 This code indicates that when the event with the name "myEvent" fires all elements of class "section" will animate top
 by 300 pixels in 400ms and all elements of class "section2" by 300 pixels in 300ms.
+<br/>
+Triggering an event is easy. After loading the library and the mss files we call the MotorCortex's "trigger" method. At
+the specific example this is as easy as this:
+<br/>
+<pre lang="javascript"><code>
+var mc = new MotorCortex();
+mc.loadMSS('./path/to/my_mss.mss', function(){
+    mc.fire('myEvent');
+});
+</code></pre>
+
+<h2>The trigger function</h2>
+The trigger function takes from 1 up to 4 parameters:<br/>
+<ul>
+    <li>eventName: the name of the event to trigger</li>
+    <li>e [optional]: a javascript event object. This is passed when we want to know the target of an action that caused an event to fire. We'll see more later on about this</li>
+    <li>params [optional]: an object containing animation parameters. These parameters (with the right MSS syntax) can be used on run time in order to assign custom values to animation parameters</li>
+    <li>callback [optional]: a callback function to call when the animation of the event finishes</li>
+</ul>
+A full example, using all the parameters is the following:
+<br/>
+<pre lang="javascript"><code>
+var mc = new MotorCortex();
+mc.loadMSS('./path/to/my_mss.mss', function(){
+    $('button').click(function(e){
+        mc.fire('myEvent', e, {top:'300px'}, function(){
+            console.log('event animation finished!');
+        });
+    });
+});
+</code></pre>
+<br/>
