@@ -293,9 +293,131 @@ elements' attributes. So, each of them should have this attributes on its tag.
 </code></pre><br/>
 
 <h3>Selectors</h3>
+As shown, each MSS node starts with the selection part. The selection part defines two things:<br/>
+<ul>
+    <li>The elements that are going to be animated</li>
+    <li>The name of the event that this animation is going to be triggered</li>
+</ul>
+For example on the following code:<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    delay:@domel.data-delay;
+    top:+=(@domel.data-top)px;
+}
+</code></pre><br/>
+the selection part is the expression: <b>.section:myEvent</b>.<br/>
+Selections are executed on nested elements too. For example, consider this MSS code (the selections are highlighted with red color):
+<br/>
+<pre lang="css"><code>
+<span style="color:red">.section:myEvent</span>{
+    duration:300;
+    top:+=300px;
+
+    <span style="color:red">img</span>{
+        rotateZ:90deg;
+    }
+}
+</code></pre><br/>
+A major difference between nested and top selectors is that on top selectors we <b>always</b> should define the event name.
+On nested selectors we <b>never</b> define the event name. Just the actual selection part.<br/>
+A top selection part has the following format:<br/>
+CSS selection:extra filter:extra filter:....:eventName <br/>
+A nested selection part has the followng format:<br/>
+CSS selection:extra filter:extra filter:....:extra filter<br/>
+By "extra filters" we mean some extra selection methods of the MSS syntax. There are two categories of extra filters that MSS provides:<br/>
+<b>The @index selection</b><br/>
+MotorCortex provides the ability to select (~filter) elements according to their index. By "index" we mean the number of
+the indexed position of the element within the dom compared to the rest of the selected items. The indexing starts from 0,
+so the first element on a group of elements has the @index=0, the second @index=1 and so on.<br/>
+The provided @index filters are the following [X means integer number throughout the scope of the whole table]:<br/>
+<table width="100%" cellspacing="0" cellpadding="0">
+    <tr>
+        <td>#</td>
+        <td><b>Operation</b></td>
+        <td><b>Syntax</b></td>
+        <td><b>Example</b></td>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>index greater than</td>
+        <td>@index>X</td>
+        <td>.section:@index>3</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>index less than</td>
+        <td>@index<X</td>
+        <td>.section:@index<3</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>index less or equal to</td>
+        <td>@index<=X</td>
+        <td>.section:@index<=3</td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>index greater or equal to</td>
+        <td>@index>=X</td>
+        <td>.section:@index>=3</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>index equals to</td>
+        <td>@index==X</td>
+        <td>.section:@index==3</td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>index odd</td>
+        <td>@index odd</td>
+        <td>.section:@index odd</td>
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>index even</td>
+        <td>@index even</td>
+        <td>.section:@index even</td>
+    </tr>
+</table>
+<br/>
+You can use the @params.xxx as the second argument of all selections. For example the following syntax is valid:<br/>
+.section:@index>=@params.xxxx
+<br/><br/>
+<b>The triggeringElement selection</b>
+Let's suppose that we have a number of list items. We want each item gets clicked to execute an animation where all the
+rest of the items scale down to 0.3 and the clicked one up to 1.5. On MotorCortex we call the element that triggered an
+event as "triggering element" and we refer to it by the keyword "triggeringElement". We can either refer to it on selection
+this way:<br/>
+<pre lang="css"><code>
+.section:triggeringElement:myEvent{
+    duration:300;
+    top:+=300px;
+}
+</code></pre><br/>
+or either exclude it from the selection using the following syntax:
+<br/>
+<pre lang="css"><code>
+.section:not(triggeringElement):myEvent{
+    duration:300;
+    top:+=300px;
+}
+</code></pre><br/>
+MotorCortex doesn't actually "know" which the triggering element was for each event. We must inform it by passing the "e"
+variable on the "trigger" method. Continuing the same example, the following javascript code would be correct:<br/>
+<pre lang="javascript"><code>
+var mc = new MotorCortex();
+mc.loadMSS('./path/to/my_mss.mss', function(){
+    $('.section').click(function(e){
+        mc.fire('myEvent', e);
+    });
+});
+</code></pre><br/>
+From the variable e, that represents the event, MotorCortex will find out and filter accordingly the animations.
 
 
 <h3>The "complete" keyword</h3>
+
 
 <h3>Looping</h3>
 
