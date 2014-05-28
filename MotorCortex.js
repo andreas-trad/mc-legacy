@@ -11,6 +11,51 @@ window.MotroCortex = function(options){
     var optionsNames = ["duration", "easing", "delay", "complete", "loop"];
     //var
 
+    var genRandom = function(x, y){
+        var min = x*1;
+        var max = y*1;
+
+        if(y <= x){
+            MC.log("warn", "When using @rand make sure the first parameter is always smaller than the first one. Reverting and proceeding");
+            var max = x*1;
+            var min = y*1;
+        }
+
+        var dif = max - min;
+        return min + dif*Math.random();
+    };
+
+    var getPrefix = function(string){
+        if(string.indexOf('+=') == 0){
+            return "+=";
+        } else if(string.indexOf('-=') == 0){
+            return '-=';
+        } else if(string.indexOf('-') == 0){
+            return '-';
+        } else {
+            return "";
+        }
+    };
+
+    var getUnits = function(string){
+        if(string.indexOf(')px', string.length - 3) !== -1){
+            return 'px';
+        } else if(string.indexOf('%', string.length - 1) !== -1){
+            return '%';
+        } else {
+            return '';
+        }
+    };
+
+    var getProperty = function(string){
+        var alpha = string.split('.')[1].split(')')[0];
+        if(alpha.indexOf('%') != -1){
+            return alpha.substring(0, alpha.length - 1);
+        } else {
+            return alpha;
+        }
+    };
+
     this.trigger = function(eventName, e, options, callback){
         var paramsOK = true;
         var execProcess;
@@ -247,8 +292,9 @@ window.MotroCortex = function(options){
      baked "selectionFunction" of the Thread and executes animations according to the parameters.
      */
     Thread.prototype.createAnimationFunction = function(properties){
-        var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*$/);
-        var domelRegex = new RegExp(/^@domel\.[a-zA-Z0-9\-\_]*$/);
+        var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*$|^-@params\.[a-zA-Z0-9\-\_]*$|^-=@params\.[a-zA-Z0-9\-\_]*$|^\+=@params\.[a-zA-Z0-9\-\_]*$|^@params\.[a-zA-Z0-9\-\_]*.%$|-^@params\.[a-zA-Z0-9\-\_]*.%$|^-=@params\.[a-zA-Z0-9\-\_]*.%$|^\+=@params\.[a-zA-Z0-9\-\_]*.%$|^\(@params\.[a-zA-Z0-9\-\_]*.\)px$|-^\(@params\.[a-zA-Z0-9\-\_]*.\)px$|^-=\(@params\.[a-zA-Z0-9\-\_]*.\)px$|^\+=\(@params\.[a-zA-Z0-9\-\_]*.\)px$/);
+        var domelRegex = new RegExp(/^@domel\.[a-zA-Z0-9\-\_]*$|^-@domel\.[a-zA-Z0-9\-\_]*$|^-=@domel\.[a-zA-Z0-9\-\_]*$|^\+=@domel\.[a-zA-Z0-9\-\_]*$|^@domel\.[a-zA-Z0-9\-\_]*.%$|^-@domel\.[a-zA-Z0-9\-\_]*.%$|^-=@domel\.[a-zA-Z0-9\-\_]*.%$|^\+=@domel\.[a-zA-Z0-9\-\_]*.%$|^\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^-\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^-=\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^\+=\(@domel\.[a-zA-Z0-9\-\_]*.\)px$/);
+        var randRegex = new RegExp(/^@rand\( *?.+ *?, *?.+ *?\)$|^-@rand\( *?.+ *?, *?.+ *?\)$|^-=@rand\( *?.+ *?, *?.+ *?\)$|^\+=@rand\( *?.+ *?, *?.+ *?\)$|^@rand\( *?.+ *?, *?.+ *?\)%$|^-@rand\( *?.+ *?, *?.+ *?\)%$|^-=@rand\( *?.+ *?, *?.+ *?\)%$|^\+=@rand\( *?.+ *?, *?.+ *?\)%$|^@rand\( *?.+ *?, *?.+ *?\)px$|^-@rand\( *?.+ *?, *?.+ *?\)px$|^-=@rand\( *?.+ *?, *?.+ *?\)px$|^\+=@rand\( *?.+ *?, *?.+ *?\)px$/);
         //var that = this;
         if(!properties.options.hasOwnProperty("duration")){
             properties.options.duration = '0.3s';
@@ -258,48 +304,73 @@ window.MotroCortex = function(options){
 
         this.animationFunction = function(e, params, callback){
             var parametric = false;
+            var random = false;
             // contains objects of format :
             // whichPart (either attributes or options)
             // whichKey (the key of the specific object that should be replaced)
             // byWhichAttr: (the name of the dom element's attribute that will be used)
             var parametrics = [];
+            var randoms = [];
 
             var numberOfAttrs = 0;
 
             for(var property in properties.attributes){
                 numberOfAttrs += 1;
                 if(paramsRegex.exec(properties.attributes[property])){
-                    var actualPropName = properties.attributes[property].split(".")[1].trim();
+                    var actualPropName = getProperty(properties.attributes[property]);
                     if(params.hasOwnProperty(actualPropName)){
-                        properties.attributes[property] = params[actualPropName];
+                        properties.attributes[property] = getPrefix(properties.attributes[property]) + params[actualPropName] + getUnits(properties.attributes[property]);
                     } else {
                         MC.log("error", "The variable " + actualPropName + " was expected in the params object but is not present. It will be ignored");
                     }
                 } else if(domelRegex.exec(properties.attributes[property])){
                     parametrics.push({
+                        pre:getPrefix(properties.attributes[property]),
+                        units:getUnits(properties.attributes[property]),
                         whichPart:'attributes',
                         whichKey:property,
-                        byWhichAttr:properties.attributes[property].split('.')[1]
+                        byWhichAttr:getProperty(properties.attributes[property])
                     });
                     parametric = true;
+                } else if(randRegex.exec(properties.attributes[property])){
+                    var propertyValArray = properties.attributes[property].match(/([^()]+)/g)[1].split(',');
+                    randoms.push({
+                        pre:getPrefix(properties.attributes[property]),
+                        units:getUnits(properties.attributes[property]),
+                        whichPart:'attributes',
+                        whichKey:property,
+                        byWhichRand:[propertyValArray[0].trim()*1, propertyValArray[1].trim()*1]
+                    });
                 }
             }
 
             for(var property in properties.options){
                 if(paramsRegex.exec(properties.options[property])){
-                    var actualPropName = properties.options[property].split(".")[1].trim();
+                    var actualPropName = getProperty(properties.options[property]);
                     if(params.hasOwnProperty(actualPropName)){
-                        properties.options[property] = params[actualPropName];
+                        properties.options[property] = getPrefix(properties.options[property]) + params[actualPropName] + getUnits(properties.options[property]);
                     } else {
                         MC.log("error", "The variable " + actualPropName + " was expected in the params object but is not present. It will be ignored");
                     }
                 } else if(domelRegex.exec(properties.options[property])){
                     parametrics.push({
+                        pre:getPrefix(properties.options[property]),
+                        units:getUnits(properties.options[property]),
                         whichPart:'options',
                         whichKey:property,
-                        byWhichAttr:properties.options[property].split('.')[1]
+                        byWhichAttr:getProperty(properties.options[property])
                     });
                     parametric = true;
+                } else if(randRegex.exec(properties.options[property])){
+                    random = true;
+                    var propertyValArray = properties.options[property].match(/([^()]+)/g)[1].split(',');
+                    randoms.push({
+                        pre:getPrefix(properties.options[property]),
+                        units:getUnits(properties.options[property]),
+                        whichPart:'options',
+                        whichKey:property,
+                        byWhichRand:[propertyValArray[0].trim()*1, propertyValArray[1].trim()*1]
+                    });
                 }
             }
 
@@ -308,7 +379,7 @@ window.MotroCortex = function(options){
                 return true;
             }
 
-            if(!parametric){
+            if(!parametric && !random){
                 properties.options.complete = function(){callback(e, params);};
                 //console.log(parentProperties);
                 //console.log(this.selectionFunction().length);
@@ -333,7 +404,10 @@ window.MotroCortex = function(options){
                     var ownAttrs = JSON.parse(JSON.stringify(properties));
                     for(var i=0; i<parametrics.length; i++){
                         //console.log($(this).attr(parametrics[i].byWhichAttr));
-                        ownAttrs[parametrics[i].whichPart][parametrics[i].whichKey] = $(this).attr(parametrics[i].byWhichAttr);
+                        ownAttrs[parametrics[i].whichPart][parametrics[i].whichKey] = parametrics[i].pre + $(this).attr(parametrics[i].byWhichAttr) + parametrics[i].units;
+                    }
+                    for(var i=0; i<randoms.length; i++){
+                        ownAttrs[randoms[i].whichPart][randoms[i].whichKey] = randoms[i].pre + genRandom(randoms[i]['byWhichRand'][0], randoms[i]['byWhichRand'][1]) + randoms[i].units;
                     }
                     //console.log(ownAttrs.options);
                     ownAttrs.options.complete = function(){CallbackHandler.finished()};
@@ -641,10 +715,10 @@ window.MotroCortex = function(options){
 
             animationEnded: function(){
                 this.numberOfExecutedLeafs+=1;
-                console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
+                //console.log('logged ' + this.numberOfExecutedLeafs + ' out of ' + this.numberOfThreads);
                 if(this.numberOfExecutedLeafs == this.numberOfThreads){
                     this.numberOfLoopsCompleted += 1;
-                    console.log('logged ' + this.numberOfLoopsCompleted + ' out of ' + loops);
+                    //console.log('logged ' + this.numberOfLoopsCompleted + ' out of ' + loops);
                     if(this.numberOfLoopsCompleted == loops){
                         this.callbackFunction();
                     } else {

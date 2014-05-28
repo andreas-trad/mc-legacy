@@ -1,15 +1,14 @@
 .listContainer .listitem:not(triggeringElement):click{
-    duration:300;
+    duration:@rand(100,300);
     delay:@domel.data-delay;
     opacity:0.5;
-    scale:0.8;
+    scale:@rand(0.7,0.9);
     easingeaseOutBack;
     backgroundColorRed:245;
     backgroundColorGreen:245;
     backgroundColorBlue:245;
-    translateX:-100px;
+    translateX:-@rand(200, 300)px;
     boxShadowBlur:0em;
-
 }
 
 
