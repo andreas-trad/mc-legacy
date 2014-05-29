@@ -1,41 +1,32 @@
-.listContainer .listitem:not(triggeringElement):click{
-    duration:300;
-    delay:@domel.data-delay;
-    opacity:0.5;
-    scale:0.8;
-    easingeaseOutBack;
-    backgroundColorRed:245;
-    backgroundColorGreen:245;
-    backgroundColorBlue:245;
-    translateX:-@rand(220, 240)px;
-    boxShadowBlur:0em;
+.myBanner:animate{
+    .step1{
+        opacity:0;
+        duration:100;
+        complete{
+            delay:100;
+            opacity:1;
+            duration:100;
+        }
+        loop:4;
+    }
+
 }
 
+animate:callback{
+    eventName:stepThree;
+    eventName:stepTwo;
+}
 
-.listContainer .listitem:triggeringElement:click{
-    duration:300;
-    scale:1;
-    opacity:1;
-    easing:easeOutBack;
-    backgroundColorRed:245;
-    backgroundColorGreen:245;
-    backgroundColorBlue:245;
-    translateX:100px;
-    complete{
-        duration:1000;
-        boxShadowBlur:1em;
+.myBanner:stepTwo{
+    .step1{
+        opacity:0;
+        duration:500;
+        scale:4;
+        top:-=180px;
     }
 }
 
-.listContainer .listitem:unclick{
-    duration:300;
-    scale:1;
-    opacity:1;
-    delay:@domel.data-delay;
-    easing:easeOutBack;
-    backgroundColorRed:255;
-    backgroundColorGreen:255;
-    backgroundColorBlue:255;
-    translateX:0px;
-    boxShadowBlur:0em;
+.myBanner:stepThree{
+    opacity:0;
+    duration:1000;
 }

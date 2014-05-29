@@ -2,45 +2,18 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Lists example</title>
+    <title>Banner example</title>
 
     <link rel="stylesheet" href="./style.css">
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-    <script src="../libs/jquery.velocity.min.js"></script>
+    <script src="../../libs/jquery.velocity.min.js"></script>
 
-    <script src="../../MotorCortex.min.js"></script>
+    <script src="../../MotorCortex.js"></script>
 </head>
 <body>
-    <div class="listContainer">
-        <div class="listitem" data-delay="75">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="150">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="225">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="300">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="375">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="450">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="525">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="600">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="675">
-            Lorem ipsum dolor sit amet, consectetur
-        </div>
-        <div class="listitem" data-delay="750">
-            Lorem ipsum dolor sit amet, consectetur
+    <div class="myBanner">
+        <div class="step step1">
+            <span>MotorCortex.js</span>
         </div>
     </div>
 
@@ -49,19 +22,11 @@
             debug:true
         });
         mc.loadMSS('./mc.mss', function(){
-            $('.listitem').click(function(e){
-                if(!$(this).hasClass('active')){
-                    $('.listitem').removeClass('active');
-                    $(this).addClass('active');
-                    mc.trigger('click', e);
-                } else {
-                    $('.listitem').removeClass('active');
-                    mc.trigger('unclick');
-                }
-
+            mc.trigger('animate', function(){
+                console.log('x');
             });
-
         });
+
 
     </script>
 </body>

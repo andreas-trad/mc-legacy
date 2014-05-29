@@ -519,6 +519,26 @@ will be executed 4 times:
 }
 </code></pre><br/>
 
+<h3>Events sequencing</h3>
+MotorCortex lets you define sequences of events (sequencial execution of events). You can define which event you want to
+trigger when an event ends by entering to the global (top) scope of any MSS file the directive:<br/>
+<br/>
+<pre lang="css"><code>
+theNameOfTheAnimationThatEnds:callback{
+    eventName:theNameOfTheAnimationToFollow;
+}
+</code></pre><br/>
+You can even trigger multiple events after an events completes by entering multiple "eventName" attributes within the
+callback node:
+<br/>
+<pre lang="css"><code>
+theNameOfTheAnimationThatEnds:callback{
+    eventName:theNameOfTheAnimationToFollow;
+    eventName:theNameOfASecondAnimationToFollow;
+    eventName:theNameOfAThirdAnimationToFollow;
+}
+</code></pre><br/>
+
 <h3>Random values</h3>
 Anywhere in your MSS file you can use the @rand() function provided. The rand function has the following syntax:<br/>
 <pre lang="javascript"><code>

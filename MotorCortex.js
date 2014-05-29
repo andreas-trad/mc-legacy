@@ -1,6 +1,6 @@
 /*global jQuery */
 /*!
- * tradpaginator.js 0.7
+ * MotorCortex.js 0.1.0
  *
  * Copyright 2014, Andreas Trantidis
  * atrantidis@gmail.com
@@ -16,6 +16,7 @@ window.MotroCortex = function(options){
     }
     var globals = [];
     var events = [];
+    var eventsCallbacks = [];
 
     var MC = this;
 
@@ -34,6 +35,10 @@ window.MotroCortex = function(options){
 
         var dif = max - min;
         return min + dif*Math.random();
+    };
+
+    var getEventObjectByName = function(eventName){
+        return events[eventName];
     };
 
     var getPrefix = function(string){
@@ -147,10 +152,10 @@ window.MotroCortex = function(options){
     }
 
     var compile = function(topNode, callback){
-        //console.log(topNode);
-        for(var property in topNode.attributes){
-            var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.\-\_]*?/);
+        var callbackRegex = new RegExp(/^[a-zA-Z0-9\.\-\_]+\:callback$/);
+        var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.\-\_]*?/);
 
+        for(var property in topNode.attributes){
             if(topNode.attributes.hasOwnProperty(property)){
                 // step 0. Check if global
                 if(property == "@index" || property == "@params" || property == "@domel"){
@@ -166,6 +171,12 @@ window.MotroCortex = function(options){
 
         for(var property in topNode.children){
             // 1.a Split the expression
+
+            if(callbackRegex.exec(property)){
+                var selectorArray = property.split(":");
+                eventsCallbacks[selectorArray[0]] = topNode.children[property].attributes.eventName;
+            }
+
             var selectorArray = property.split(":");
 
             // 1.b Check that the newly created array is at least of length 2
@@ -178,7 +189,7 @@ window.MotroCortex = function(options){
                     if(topNode.children[property].attributes.hasOwnProperty('loop')){
                         eventLoops = topNode.children[property].attributes['loop'];
                     }
-                    var event = new Event(eventLoops);
+                    var event = new Event(eventLoops, selectorArray[selectorArray.length - 1]);
                     event.addThread(selectorArray, topNode.children[property]);
                     events[selectorArray[selectorArray.length - 1]] = event;
                 } else {
@@ -226,10 +237,7 @@ window.MotroCortex = function(options){
         var ownAttrs = JSON.parse(JSON.stringify(parentProperties));
         ownAttrs.attributes = {};
 
-        //console.log(node);
-
         for(var property in node.attributes){
-            //console.log(property);
             if(globalsRegex.exec(node.attributes[property])){
                 var expectedGlobalsKey = node.attributes[property].split('.')[1].trim();
                 if(!globals.hasOwnProperty("@"+expectedGlobalsKey)){
@@ -246,25 +254,31 @@ window.MotroCortex = function(options){
                     this.loops = node.attributes[property];
                 }
             } else {
-                //console.log(property);
                 ownAttrs.attributes[property] = node.attributes[property];
             }
         }
 
-        /*
-         first create the base ThreadCollection of the specific node
-         */
-        //threadCollections.push(new Thread());
         var callbackFunction = function(){
-            //console.log('loggin end');
             EventObject.CallbackHandler.animationEnded();
         }
 
         var childs = Object.keys(node.children);
+
+        if(node.attributes.hasOwnProperty('loop')){
+            EventObject.setLoopTimes(node.attributes.loop);
+        }
+
         for(var i=0; i<childs.length; i++){
             var childName = childs[i];
-            //console.log(childName);
-            if(childName != "complete"){
+
+            if(childName == "complete:trigger"){
+                callbackFunction = function(e, params){
+                    var callback = function(){
+                        EventObject.CallbackHandler.animationEnded();
+                    }
+                    getEventObjectByName(node.children[childName].attributes.eventName).fire(e, params, callback);
+                }
+            } else if(childName != "complete"){
                 EventObject.addReadyThread(new Thread(this.selectionFunction, node.children[childName], EventObject, ownAttrs, childName));
             } else {
                 var eventLoops = 1;
@@ -279,7 +293,6 @@ window.MotroCortex = function(options){
                         EventObject.CallbackHandler.animationEnded();
                     }
                     nestedEvent.fire(e, params, callback);
-                    //callbackThread.execute(e, params);
                 }
             }
         }
@@ -288,9 +301,6 @@ window.MotroCortex = function(options){
 
 
         this.execute = function(e, params){
-            //console.log(e);
-            //console.log('executing');
-            //console.log(this.selectionFunction());
             this.animationFunction(e, params, callbackFunction);
         };
 
@@ -307,9 +317,10 @@ window.MotroCortex = function(options){
         var domelRegex = new RegExp(/^@domel\.[a-zA-Z0-9\-\_]*$|^-@domel\.[a-zA-Z0-9\-\_]*$|^-=@domel\.[a-zA-Z0-9\-\_]*$|^\+=@domel\.[a-zA-Z0-9\-\_]*$|^@domel\.[a-zA-Z0-9\-\_]*.%$|^-@domel\.[a-zA-Z0-9\-\_]*.%$|^-=@domel\.[a-zA-Z0-9\-\_]*.%$|^\+=@domel\.[a-zA-Z0-9\-\_]*.%$|^\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^-\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^-=\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^\+=\(@domel\.[a-zA-Z0-9\-\_]*.\)px$/);
         var randRegex = new RegExp(/^@rand\( *?.+ *?, *?.+ *?\)$|^-@rand\( *?.+ *?, *?.+ *?\)$|^-=@rand\( *?.+ *?, *?.+ *?\)$|^\+=@rand\( *?.+ *?, *?.+ *?\)$|^@rand\( *?.+ *?, *?.+ *?\)%$|^-@rand\( *?.+ *?, *?.+ *?\)%$|^-=@rand\( *?.+ *?, *?.+ *?\)%$|^\+=@rand\( *?.+ *?, *?.+ *?\)%$|^@rand\( *?.+ *?, *?.+ *?\)px$|^-@rand\( *?.+ *?, *?.+ *?\)px$|^-=@rand\( *?.+ *?, *?.+ *?\)px$|^\+=@rand\( *?.+ *?, *?.+ *?\)px$/);
         //var that = this;
+        var flaggedWithoutDuration = false;
         if(!properties.options.hasOwnProperty("duration")){
             properties.options.duration = '0.3s';
-            MC.log("error", "The duration has not been defined. The default (0.3s) will be used");
+            flaggedWithoutDuration = true;
         }
 
 
@@ -388,12 +399,12 @@ window.MotroCortex = function(options){
             if(numberOfAttrs == 0){
                 callback(e, params);
                 return true;
+            } else if(flaggedWithoutDuration){
+                MC.log("error", "The duration has not been defined. The default (0.3s) will be used");
             }
 
             if(!parametric && !random){
                 properties.options.complete = function(){callback(e, params);};
-                //console.log(parentProperties);
-                //console.log(this.selectionFunction().length);
                 var animatedElements = this.selectionFunction(properties, e);
                 this.selectionFunction(properties, e).velocity(properties.attributes, properties.options);
                 //console.log(properties);
@@ -681,10 +692,11 @@ window.MotroCortex = function(options){
 
     };
 
-    var Event = function(loops){
+    var Event = function(loops, id){
         if(!loops){
             loops = 1;
         }
+
 
         //console.log('event is going to loop ' + loops + ' times')
 
@@ -703,6 +715,7 @@ window.MotroCortex = function(options){
         this.CallbackHandler = {
             numberOfExecutedLeafs: 0,
             numberOfLoopsCompleted: 0,
+            eventId:id,
 
             init: function(numberOfThreads, callback, e, options){
                 this.numberOfThreads = numberOfThreads;
@@ -711,6 +724,11 @@ window.MotroCortex = function(options){
                 this.options = options;
                 return this;
             },
+
+            setLoopTimes:function(loopTimes){
+                loops = loopTimes;
+            },
+
 
             reset: function(preserveLoop){
                 if(!preserveLoop){
@@ -731,6 +749,19 @@ window.MotroCortex = function(options){
                     this.numberOfLoopsCompleted += 1;
                     //console.log('logged ' + this.numberOfLoopsCompleted + ' out of ' + loops);
                     if(this.numberOfLoopsCompleted == loops){
+                        if(this.eventId != null){
+                            if(eventsCallbacks[this.eventId] != null && eventsCallbacks[this.eventId] != undefined){
+                                if(typeof eventsCallbacks[this.eventId] == "string"){
+                                    getEventObjectByName(eventsCallbacks[this.eventId]).fire(this.e, this.options, this.callbackFunction);
+                                } else if(Array.isArray(eventsCallbacks[this.eventId])){
+                                    for(var i=0; i<eventsCallbacks[this.eventId].length; i++){
+                                        getEventObjectByName(eventsCallbacks[this.eventId][i]).fire(this.e, this.options, this.callbackFunction);
+                                    }
+                                }
+
+                                return true;
+                            }
+                        }
                         this.callbackFunction();
                     } else {
                         this.resetLoop();
@@ -739,6 +770,10 @@ window.MotroCortex = function(options){
                 }
             }
         };
+    };
+
+    Event.prototype.setOverallEventCallback = function(eventName){
+        this.parentEvent.setOverallEventCallback();
     };
 
     /*
@@ -751,6 +786,7 @@ window.MotroCortex = function(options){
         this.addTheThread(selector, node);
     };
 
+
     Event.prototype.fire = function(e, options, callback, preserveLoop){
         if(!callback){
             callback = function(){};
@@ -758,6 +794,7 @@ window.MotroCortex = function(options){
         if(!options){
             options = {};
         }
+
         this.CallbackHandler.init(this.threads.length, callback, e, options, this.fire).reset(preserveLoop);
 
         for(var i=0; i<this.threads.length; i++){
@@ -769,6 +806,10 @@ window.MotroCortex = function(options){
     Event.prototype.stop = function(){
 
     };
+
+    Event.prototype.setLoopTimes = function(loopTimes){
+        this.CallbackHandler.setLoopTimes(loopTimes);
+    }
 
 
 
