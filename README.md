@@ -528,7 +528,7 @@ theNameOfTheAnimationThatEnds:callback{
     eventName:theNameOfTheAnimationToFollow;
 }
 </code></pre><br/>
-You can even trigger multiple events after an events completes by entering multiple "eventName" attributes within the
+You can even trigger multiple events after an event completes by entering multiple "eventName" attributes within the
 callback node:
 <br/>
 <pre lang="css"><code>
