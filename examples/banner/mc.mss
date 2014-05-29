@@ -9,24 +9,38 @@
         }
         loop:4;
     }
-
 }
 
 animate:callback{
-    eventName:stepThree;
     eventName:stepTwo;
 }
 
 .myBanner:stepTwo{
+    .step2{
+        scale:4;
+        duration:0;
+        complete{
+            delay:350;
+            opacity:1;
+            duration:250;
+            scale:1;
+            complete{
+                colorRed:256;
+                colorBlue:256;
+                colorGreen:256;
+                .initzero{
+                    width:120px;
+                    duration:2000;
+                }
+                duration:500;
+            }
+        }
+    }
     .step1{
         opacity:0;
         duration:500;
         scale:4;
         top:-=180px;
     }
-}
 
-.myBanner:stepThree{
-    opacity:0;
-    duration:1000;
 }
