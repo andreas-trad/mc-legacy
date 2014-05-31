@@ -555,7 +555,7 @@ An example of @rand usage is the following:
 </code></pre><br/>
 
 <h3>Adding and removing classes</h3>
-Sometimes during an animation it's useful to change either add or remove classes from the animated elements. This not only
+Sometimes during an animation it's useful to either add or remove classes from the animated elements. This not only
 applies alterations on the elements' appearance but also provides a way to change the groups of elements to animate on
 following animations dynamically.<br/>
 MSS provides the ability to dynamically add and remove classes to elements by the keywords:<br/>
