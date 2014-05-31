@@ -336,7 +336,29 @@ window.MotroCortex = function(options){
 
             var numberOfAttrs = 0;
 
+            var preActions = [];
+            var execPreActions = function(element){
+                for(var i=0; i<preActions.length; i++){
+                    preActions[i](element);
+                }
+                return element;
+            };
+
             for(var property in properties.attributes){
+                if(property == '-.'){
+                    var className = properties.attributes[property] + '';
+                    preActions.push(function(element){
+                        element.removeClass(className);
+                    });
+                    continue;
+                } else if(property == '+.') {
+                    var className = properties.attributes[property] + '';
+                    preActions.push(function(element){
+                        element.addClass(className);
+                    });
+                    continue;
+                }
+
                 numberOfAttrs += 1;
                 if(paramsRegex.exec(properties.attributes[property])){
                     var actualPropName = getProperty(properties.attributes[property]);
@@ -397,16 +419,17 @@ window.MotroCortex = function(options){
             }
 
             if(numberOfAttrs == 0){
+                execPreActions(this.selectionFunction(properties, e));
                 callback(e, params);
                 return true;
-            } else if(flaggedWithoutDuration){
+            }  else if(flaggedWithoutDuration){
                 MC.log("error", "The duration has not been defined. The default (0.3s) will be used");
             }
 
             if(!parametric && !random){
                 properties.options.complete = function(){callback(e, params);};
                 var animatedElements = this.selectionFunction(properties, e);
-                this.selectionFunction(properties, e).velocity(properties.attributes, properties.options);
+                execPreActions(this.selectionFunction(properties, e)).velocity(properties.attributes, properties.options);
                 //console.log(properties);
             } else {
                 var selectedElements = this.selectionFunction(properties, e);
@@ -433,7 +456,7 @@ window.MotroCortex = function(options){
                     }
                     //console.log(ownAttrs.options);
                     ownAttrs.options.complete = function(){CallbackHandler.finished()};
-                    $(this).velocity(ownAttrs.attributes, ownAttrs.options);
+                    execPreActions($(this)).velocity(ownAttrs.attributes, ownAttrs.options);
                 });
             }
 
