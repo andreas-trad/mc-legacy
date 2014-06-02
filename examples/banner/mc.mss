@@ -28,9 +28,9 @@ animate:callback{
                 colorRed:256;
                 colorBlue:256;
                 colorGreen:256;
-                .initzero{
-                    width:120px;
-                    duration:2000;
+                .initzero .onebyone{
+                    width:12px;
+                    duration:1000;
                 }
                 duration:500;
             }

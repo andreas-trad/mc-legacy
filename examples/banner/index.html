@@ -23,9 +23,13 @@
     </div>
 
     <script>
+
+
         var mc = new MotroCortex({
             debug:true
         });
+
+        mc.Untilities.wrapCharacters($(".initzero"), 'onebyone');
         mc.loadMSS('./mc.mss', function(){
             mc.trigger('animate', function(){
                 console.log('x');

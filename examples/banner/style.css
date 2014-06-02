@@ -32,17 +32,12 @@
     color:orange;
 }
 
-.initzero{
+.initzero .onebyone{
     width:0px;
+    float: left;
+    overflow: hidden;
 }
 
 .initzero, .org{
     float: left;
-}
-
-.alpha{
-    margin-right: 60px;
-}
-.beta{
-    margin-right: 160px;
 }
