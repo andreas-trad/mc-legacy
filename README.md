@@ -553,3 +553,30 @@ An example of @rand usage is the following:
     left:(@rand(100,200))px;
 }
 </code></pre><br/>
+
+<h3>Adding and removing classes</h3>
+Sometimes during an animation it's useful to either add or remove classes from the animated elements. This not only
+applies alterations on the elements' appearance but also provides a way to change the groups of elements to animate on
+following animations dynamically.<br/>
+MSS provides the ability to dynamically add and remove classes to elements by the keywords:<br/>
+<pre lang="css"><code>
+-. /* remove class */
++. /* add class */
+</code></pre><br/>
+<br/>
+Example:<br/>
+<pre lang="css"><code>
+.section:myEvent{
+    duration:@rand(250,350);
+    left:(@rand(100,200))px;
+    complete{
+        -.:classA;
+        +.:classB;
+        duration:250;
+        left:-=200;
+    }
+}
+</code></pre><br/>
+The process of adding or removing classes to elements is always executed BEFORE the actual animation process. In our example
+the elements of class "section", when entering the "complete" section of the animation, they will first remove the class
+"classA" and add the class "classB" and THEN they will animate left by -200 px.
