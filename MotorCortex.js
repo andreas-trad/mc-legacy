@@ -10,7 +10,7 @@
  */
 
 (function(window){
-    window.MotroCortex = function(options){
+    window.MotorCortex = function(options){
         var mc_debug = false;
         if(options){
             mc_debug = options.hasOwnProperty('debug')?options.debug:false;
