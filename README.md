@@ -1,6 +1,9 @@
 <h1>motorcortexjs</h1>
 =============
 
+<h2>Website</h2>
+<a href="http://motorcortexjs.com/" target="_blank">http://motorcortexjs.com</a>
+
 <h2>Intro</h2>
 How would you like to decouple and take all the animations logic, of your web applications, completely out of your javascript code?<br/>
 How would you like to define your animations in a CSS-like syntax on external files and just trigger custom events in order to execute them?<br/>
