@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../tests/main.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <script src="../libs/jquery.velocity.min.js"></script>
+
+    <script src="../libs/cssjson.js"></script>
+
+    <script src="../MotorCortex.js"></script>
+
+    <script>
+        var mc = new MotroCortex({
+            debug:true
+        });
+        mc.loadMSS("./mss/test4.mss");
+
+        $(document).ready(function(){
+            $(".giftdiv").click(function(){
+                mc.trigger("Advertisement", null, {height:'400px'}, function(){
+                    console.log('advertise');
+                });
+            })
+            
+           	$(".giftbox").hover(function(){
+                mc.trigger("TiltBox", null, {height:'400px'}, function(){
+                    console.log('hover');
+                });
+            })
+            
+            $(".giftbox").mouseleave(function(){
+                mc.trigger("ResetBox", null, {height:'400px'}, function(){
+                    console.log('on mouse out');
+                });
+            })
+        })
+
+    </script>
+
+    <title>MotorCortex Test 4</title>
+</head>
+<body>
+<div class="advertisement">
+    <div class="title">
+    	<h3>20% Discount</h3>
+    	<article>
+    		Click the gift box below to earn 20% discount
+    	</article>
+	</div>
+    <div class="giftdiv">
+    	<img class="giftbox" src="img/gift.png"/>
+    	 	<div class="emailcontainer">
+    			<input type="email" placeholder="Your Email Address"></input>
+    		</div>
+    </div>
+   
+</div>
+    
+
+</body>
+</html>

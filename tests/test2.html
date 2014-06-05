@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../tests/main.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <script src="../libs/jquery.velocity.min.js"></script>
+
+    <script src="../libs/cssjson.js"></script>
+
+    <script src="../MotorCortex.js"></script>
+
+    <script>
+        var mc = new MotroCortex({
+            debug:true
+        });
+        mc.loadMSS("./mss/test2.mss");
+
+        $(document).ready(function(){
+            $("#button").click(function(){
+                mc.trigger("Circles", null, {height:'400px'}, function(){
+                    console.log('finished');
+                });
+            })
+        })
+
+    </script>
+
+    <title>MotorCortex Test 2</title>
+</head>
+<body>
+<div class="container">
+    <div class="section2" duration="400">
+    	<span>Circle 1</span>
+    </div>
+    <div class="section2" duration="600">
+    	<span>Circle 2</span>
+    </div>
+    <div class="section2" duration="1000">
+    	<span>Circle 3</span>
+    </div>
+    <div class="section2" duration="1600">
+    	<span>Circle 4</span>
+    </div>
+</div>
+    <button id="button">Click me!</button>
+
+</body>
+</html>

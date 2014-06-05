@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../tests/main.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <script src="../libs/jquery.velocity.min.js"></script>
+
+    <script src="../libs/cssjson.js"></script>
+
+    <script src="../MotorCortex.js"></script>
+
+    <script>
+        var mc = new MotroCortex({
+            debug:true
+        });
+        mc.loadMSS("./mss/test1.mss");
+
+        $(document).ready(function(){
+            $("#button").click(function(){
+                mc.trigger("showPercentage", null, {height:'400px'}, function(){
+                    console.log('finished');
+                });
+            })
+        })
+
+    </script>
+
+    <title>MotorCortex Test 1</title>
+</head>
+<body>
+<div class="container">
+    <div class="section1" data-percentage="80%" duration="200">
+    	<span>80%</span>
+    </div>
+    <div class="section1" data-percentage="47%" duration="400">
+    	<span>47%</span>
+    </div>
+    <div class="section1" data-percentage="35%" duration="800">
+    	<span>35%</span>
+    </div>
+    <div class="section1" data-percentage="22%" duration="1600">
+    	<span>22%</span>
+    </div>
+</div>
+    <button id="button">Click me!</button>
+
+</body>
+</html>

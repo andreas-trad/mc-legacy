@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="../tests/main.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+    <script src="../libs/jquery.velocity.min.js"></script>
+
+    <script src="../libs/cssjson.js"></script>
+
+    <script src="../MotorCortex.js"></script>
+
+    <script>
+        var mc = new MotroCortex({
+            debug:true
+        });
+        mc.loadMSS("./mss/test5.mss");
+
+        $(document).ready(function(){
+            setTimeout(function(){
+                mc.trigger("Loop", null, {height:'400px'}, function(){
+                    console.log('advertise');
+                
+            	});
+            },1000);
+        })
+
+    </script>
+
+    <title>MotorCortex Test 5</title>
+</head>
+<body>
+<div class="loopad">
+	<div class="leftimage">
+		<img src="img/cat.png"/>
+		<div class="zzz">
+			<ul>
+				<li>Z</li>
+				<li>Z</li>
+				<li>Z</li>
+			</ul>
+		</div>
+	</div>
+	<div class="textcenter">
+		<h1>BestPetShop.com</h1>
+		<div class="goods">
+			<span>Food</span>
+			<span>Toys</span>
+			<span>Gifts</span>
+			<ul>
+				<li><img src="img/food.png"/></li>
+				<li><img src="img/bone.png"/></li>
+				<li><img src="img/gifts.png"/></li>
+			</ul>
+		</div>
+		<div class="boxcat">	
+			<img src="img/boxcat.png"/>
+		</div>
+		<div class="delivery">
+			<h1>Free Delivery!</h1>
+		</div>
+	</div>
+	<div class="rightimage">
+		<img src="img/dog.png"/>
+		<div class="drop">
+			<img src="img/drop.png"/>
+		</div>
+	</div>
+</div>
+
+
+
+</body>
+</html>
