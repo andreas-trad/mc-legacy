@@ -105,7 +105,7 @@ the specific example this is as easy as this:
 <pre lang="javascript"><code>
 var mc = new MotorCortex();
 mc.loadMSS('./path/to/my_mss.mss', function(){
-    mc.fire('myEvent');
+    mc.trigger('myEvent');
 });
 </code></pre>
 
@@ -123,7 +123,7 @@ A full example, using all the parameters is the following:
 var mc = new MotorCortex();
 mc.loadMSS('./path/to/my_mss.mss', function(){
     $('button').click(function(e){
-        mc.fire('myEvent', e, {top:'300px'}, function(){
+        mc.trigger('myEvent', e, {top:'300px'}, function(){
             console.log('event animation finished!');
         });
     });
@@ -132,14 +132,14 @@ mc.loadMSS('./path/to/my_mss.mss', function(){
 <br/>
 All the following method invocations are valid:<br/>
 <pre lang="javascript"><code>
-mc.fire(eventName);
-mc.fire(eventName, e);
-mc.fire(eventName, e, params);
-mc.fire(eventName, e, params, callback);
-mc.fire(eventName, e, callback);
-mc.fire(eventName, params);
-mc.fire(eventName, params, callback);
-mc.fire(eventName, callback);
+mc.trigger(eventName);
+mc.trigger(eventName, e);
+mc.trigger(eventName, e, params);
+mc.trigger(eventName, e, params, callback);
+mc.trigger(eventName, e, callback);
+mc.trigger(eventName, params);
+mc.trigger(eventName, params, callback);
+mc.trigger(eventName, callback);
 </code></pre>
 
 <h3>Animation parameters and characteristics</h3>
@@ -287,7 +287,7 @@ following:<br/>
 <pre lang="javascript"><code>
 var mc = new MotorCortex();
 mc.loadMSS('./path/to/my_mss.mss', function(){
-    mc.fire('myEvent', {duration:300, top:250});
+    mc.trigger('myEvent', {duration:300, top:250});
 });
 </code></pre>
 By this invocation the transition will execute in 300ms making the .section elements top equals to 250px. <br/>
@@ -445,7 +445,7 @@ variable on the "trigger" method. Continuing the same example, the following jav
 var mc = new MotorCortex();
 mc.loadMSS('./path/to/my_mss.mss', function(){
     $('.section').click(function(e){
-        mc.fire('myEvent', e);
+        mc.trigger('myEvent', e);
     });
 });
 </code></pre><br/>
