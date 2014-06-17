@@ -171,13 +171,12 @@
             }
 
             for(var property in topNode.children){
-                // 1.a Split the expression
-
                 if(callbackRegex.exec(property)){
                     var selectorArray = property.split(":");
                     eventsCallbacks[selectorArray[0]] = topNode.children[property].attributes.eventName;
                 }
 
+                // 1.a Split the expression
                 var selectorArray = property.split(":");
 
                 // 1.b Check that the newly created array is at least of length 2

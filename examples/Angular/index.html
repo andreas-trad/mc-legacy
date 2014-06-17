@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html ng-app="plunker">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularJS Plunker</title>
+    <script>
+    document.write('<base href="' + document.location + '" />');
+  </script>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="http://rawgithub.com/HubSpot/odometer/master/themes/odometer-theme-train-station.css">
+    <script data-require="angular.js@1.2.x" src="https://code.angularjs.org/1.2.16/angular.js" data-semver="1.2.16"></script>
+    <script data-require="jquery@*" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+    <script data-require="lodash.js@*" data-semver="2.4.1" src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
+    <script src="http://rawgit.com/julianshapiro/velocity/master/jquery.velocity.js"></script>
+    <script src="http://rawgithub.com/andreas-trad/motorcortexjs/master/MotorCortex.js"></script>
+    <script src="http://rawgit.com/HubSpot/odometer/master/odometer.js"></script>
+  </head>
+
+  <body ng-controller="MainCtrl">
+    <div class="contents">
+      <div class="bar" ng-repeat="bar in bars track by $index">
+        <div class="number">
+          <odometer ng-model="bar"></odometer>
+        </div>
+        <div class="percentage" data-percentage="{{bar}}%" 
+                                data-green="{{bar}}%" 
+                                data-duration="{{$index * 150}}"></div>
+      </div>
+    </div>
+
+    <div class="clear"></div>
+
+    <div class="details">
+        <h2>Angular.js implementation</h2>
+        Thanks to <a href="https://github.com/justinobney" target="_blank">Justin Obney</a>
+    </div>
+
+    <script src="app.js"></script>
+
+  </body>
+
+</html>
