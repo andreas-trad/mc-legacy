@@ -1,6 +1,6 @@
 /*global jQuery */
 /*!
- * MotorCortex.js 0.1.0
+ * MotorCortex.js 0.1.1
  *
  * Copyright 2014, Andreas Trantidis
  * atrantidis@gmail.com
@@ -325,6 +325,8 @@
 
 
             this.animationFunction = function(e, params, callback){
+                var propsToPass = JSON.parse(JSON.stringify(properties));
+
                 var parametric = false;
                 var random = false;
                 // contains objects of format :
@@ -363,7 +365,7 @@
                     if(paramsRegex.exec(properties.attributes[property])){
                         var actualPropName = getProperty(properties.attributes[property]);
                         if(params.hasOwnProperty(actualPropName)){
-                            properties.attributes[property] = getPrefix(properties.attributes[property]) + params[actualPropName] + getUnits(properties.attributes[property]);
+                            propsToPass.attributes[property] = getPrefix(properties.attributes[property]) + params[actualPropName] + getUnits(properties.attributes[property]);
                         } else {
                             MC.log("error", "The variable " + actualPropName + " was expected in the params object but is not present. It will be ignored");
                         }
@@ -392,7 +394,7 @@
                     if(paramsRegex.exec(properties.options[property])){
                         var actualPropName = getProperty(properties.options[property]);
                         if(params.hasOwnProperty(actualPropName)){
-                            properties.options[property] = getPrefix(properties.options[property]) + params[actualPropName] + getUnits(properties.options[property]);
+                            propsToPass.options[property] = getPrefix(properties.options[property]) + params[actualPropName] + getUnits(properties.options[property]);
                         } else {
                             MC.log("error", "The variable " + actualPropName + " was expected in the params object but is not present. It will be ignored");
                         }
@@ -427,12 +429,12 @@
                 }
 
                 if(!parametric && !random){
-                    properties.options.complete = function(){callback(e, params);};
-                    var animatedElements = this.selectionFunction(properties, e);
-                    execPreActions(this.selectionFunction(properties, e)).velocity(properties.attributes, properties.options);
+                    propsToPass.options.complete = function(){callback(e, params);};
+                    var animatedElements = this.selectionFunction(propsToPass, e);
+                    execPreActions(this.selectionFunction(propsToPass, e)).velocity(propsToPass.attributes, propsToPass.options);
                     //console.log(properties);
                 } else {
-                    var selectedElements = this.selectionFunction(properties, e);
+                    var selectedElements = this.selectionFunction(propsToPass, e);
                     var CallbackHandler = {
                         numberOfElements: selectedElements.length,
                         numberOfFinished:0,
