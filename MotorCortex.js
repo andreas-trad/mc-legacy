@@ -454,7 +454,7 @@
                     };
 
                     selectedElements.each(function(){
-                        var ownAttrs = JSON.parse(JSON.stringify(properties));
+                        var ownAttrs = JSON.parse(JSON.stringify(propsToPass));
                         for(var i=0; i<parametrics.length; i++){
                             //console.log($(this).attr(parametrics[i].byWhichAttr));
                             ownAttrs[parametrics[i].whichPart][parametrics[i].whichKey] = parametrics[i].pre + $(this).attr(parametrics[i].byWhichAttr) + parametrics[i].units;
@@ -462,8 +462,8 @@
                         for(var i=0; i<randoms.length; i++){
                             ownAttrs[randoms[i].whichPart][randoms[i].whichKey] = randoms[i].pre + genRandom(randoms[i]['byWhichRand'][0], randoms[i]['byWhichRand'][1]) + randoms[i].units;
                         }
-                        //console.log(ownAttrs.options);
                         ownAttrs.options.complete = function(){CallbackHandler.finished()};
+                        execPreActions($(this)).velocity(ownAttrs.attributes, ownAttrs.options);
                     });
                 }
 

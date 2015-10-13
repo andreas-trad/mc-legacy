@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html ng-app="AngularExample">
+<head>
+    <title>Graphs example</title>
+
+    <link rel="stylesheet" href="./style.css">
+    <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script data-require="angular.js@1.2.x" src="https://code.angularjs.org/1.2.16/angular.js" data-semver="1.2.16"></script>
+    <script src="../../libs/jquery.velocity.min.js"></script>
+    <script src="../../MotorCortex.js"></script>
+</head>
+<body ng-controller="MainCtrl">
+    <div class="contents">
+        <div class="bar" ng-repeat="bar in bars  track by $index">
+            <div class="number" ng-class="{biggest: bar==100}" data-duration="{{$index*10}}">{{bar}}%</div>
+            <div class="percentage"  data-percentage="{{bar}}%" data-duration="{{$index*150}}"></div>
+        </div>
+    </div>
+
+    <script src="./app.js"></script>
+</body>
+</html>
