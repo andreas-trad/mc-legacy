@@ -583,3 +583,22 @@ Example:<br/>
 The process of adding or removing classes to elements is always executed BEFORE the actual animation process. In our example
 the elements of class "section", when entering the "complete" section of the animation, they will first remove the class
 "classA" and add the class "classB" and THEN they will animate left by -200 px.
+
+
+<h3>Scroll</h3>
+As defined on velocity's website the scroll command is supported so you can easily scroll the window to the top
+of any element of the webpage.<br/>
+In order to do that just put "scroll:true" to the animation attributes of any element.<br/>
+Example: <br/>
+<pre lang="css"><code>
+#section:myEvent{
+    duration:300;
+    scroll:true;
+}
+</code></pre><br/>
+This way, whenever the "myEvent" gets fired by MotorCortex the window will scroll to the top of the "#section"
+element of the webpage.<br/>
+Make sure the selection ("#section" on this example) refers to just one element on the webpage to avoid strange
+behaviour of the animation. Also, keep in mind that the scroll command gets executed separately (in parallel)
+with any other animation defined for a section. If on a section there's only the "scroll" command the complete
+keyword / functionality is not supported.

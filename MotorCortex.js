@@ -86,7 +86,7 @@
             } else {
                 if(typeof arguments[0] != "string"){
                     MC.log("error", "The first argument of the trigger function should always be a string representing the name of the event to be triggered. "
-                        + typeof arguments[0] + " passed on call.");
+                    + typeof arguments[0] + " passed on call.");
                     execProcess = new ExecutionProcess(null);
                     paramsOK = false;
                 } else if(arguments.length > 1) {
@@ -161,7 +161,7 @@
                     // step 0. Check if global
                     if(property == "@index" || property == "@params" || property == "@domel"){
                         MC.log("warn", "The keywords/parameter names @index, @params and @domel are reserved by MotorCortex " +
-                            "and cannot be used as a global variable's name. The declared global " + property + " will be ignored!");
+                        "and cannot be used as a global variable's name. The declared global " + property + " will be ignored!");
                     } else if(globalsRegx.exec(property)){
                         globals[property] = topNode.attributes[property];
                     } else {
@@ -182,7 +182,7 @@
                 // 1.b Check that the newly created array is at least of length 2
                 if(selectorArray.length < 2){
                     MC.log("error", "The MC selection and event part " + property + " is not valid. Each MC selection string should consist by least a selection string and an event name" +
-                        " separated by the ':' character.");
+                    " separated by the ':' character.");
                 } else {
                     if(!events.hasOwnProperty(selectorArray[selectorArray.length - 1])){
                         var eventLoops = 1;
@@ -346,6 +346,7 @@
                     return element;
                 };
 
+                var scrollCommand = false;
                 for(var property in properties.attributes){
                     if(property == '-.'){
                         var className = properties.attributes[property] + '';
@@ -359,6 +360,8 @@
                             element.addClass(className);
                         });
                         continue;
+                    } else if(property == 'scroll'){
+                        scrollCommand = true;
                     }
 
                     numberOfAttrs += 1;
@@ -431,6 +434,9 @@
                 if(!parametric && !random){
                     propsToPass.options.complete = function(){callback(e, params);};
                     var animatedElements = this.selectionFunction(propsToPass, e);
+                    if(scrollCommand){
+                        this.selectionFunction(propsToPass, e).velocity('scroll', propsToPass.options);
+                    }
                     execPreActions(this.selectionFunction(propsToPass, e)).velocity(propsToPass.attributes, propsToPass.options);
                     //console.log(properties);
                 } else {
@@ -458,7 +464,6 @@
                         }
                         //console.log(ownAttrs.options);
                         ownAttrs.options.complete = function(){CallbackHandler.finished()};
-                        execPreActions($(this)).velocity(ownAttrs.attributes, ownAttrs.options);
                     });
                 }
 
