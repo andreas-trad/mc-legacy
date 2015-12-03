@@ -1,6 +1,6 @@
 /*global jQuery */
 /*!
- * MotorCortex.js 1.0.2
+ * MotorCortex.js 1.0.3
  *
  * Copyright 2014, Andreas Trantidis
  * atrantidis@gmail.com

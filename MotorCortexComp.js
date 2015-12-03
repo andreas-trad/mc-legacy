@@ -312,9 +312,9 @@ var MotorCortex = function(options){
      baked "selectionFunction" of the Thread and executes animations according to the parameters.
      */
     Thread.prototype.createAnimationFunction = function(properties){
-        var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*jQuery|^-@params\.[a-zA-Z0-9\-\_]*jQuery|^-=@params\.[a-zA-Z0-9\-\_]*jQuery|^\+=@params\.[a-zA-Z0-9\-\_]*jQuery|^@params\.[a-zA-Z0-9\-\_]*.%jQuery|-^@params\.[a-zA-Z0-9\-\_]*.%jQuery|^-=@params\.[a-zA-Z0-9\-\_]*.%jQuery|^\+=@params\.[a-zA-Z0-9\-\_]*.%jQuery|^\(@params\.[a-zA-Z0-9\-\_]*.\)pxjQuery|-^\(@params\.[a-zA-Z0-9\-\_]*.\)pxjQuery|^-=\(@params\.[a-zA-Z0-9\-\_]*.\)pxjQuery|^\+=\(@params\.[a-zA-Z0-9\-\_]*.\)pxjQuery/);
-        var domelRegex = new RegExp(/^@domel\.[a-zA-Z0-9\-\_]*jQuery|^-@domel\.[a-zA-Z0-9\-\_]*jQuery|^-=@domel\.[a-zA-Z0-9\-\_]*jQuery|^\+=@domel\.[a-zA-Z0-9\-\_]*jQuery|^@domel\.[a-zA-Z0-9\-\_]*.%jQuery|^-@domel\.[a-zA-Z0-9\-\_]*.%jQuery|^-=@domel\.[a-zA-Z0-9\-\_]*.%jQuery|^\+=@domel\.[a-zA-Z0-9\-\_]*.%jQuery|^\(@domel\.[a-zA-Z0-9\-\_]*.\)pxjQuery|^-\(@domel\.[a-zA-Z0-9\-\_]*.\)pxjQuery|^-=\(@domel\.[a-zA-Z0-9\-\_]*.\)pxjQuery|^\+=\(@domel\.[a-zA-Z0-9\-\_]*.\)pxjQuery/);
-        var randRegex = new RegExp(/^@rand\( *?.+ *?, *?.+ *?\)jQuery|^-@rand\( *?.+ *?, *?.+ *?\)jQuery|^-=@rand\( *?.+ *?, *?.+ *?\)jQuery|^\+=@rand\( *?.+ *?, *?.+ *?\)jQuery|^@rand\( *?.+ *?, *?.+ *?\)%jQuery|^-@rand\( *?.+ *?, *?.+ *?\)%jQuery|^-=@rand\( *?.+ *?, *?.+ *?\)%jQuery|^\+=@rand\( *?.+ *?, *?.+ *?\)%jQuery|^@rand\( *?.+ *?, *?.+ *?\)pxjQuery|^-@rand\( *?.+ *?, *?.+ *?\)pxjQuery|^-=@rand\( *?.+ *?, *?.+ *?\)pxjQuery|^\+=@rand\( *?.+ *?, *?.+ *?\)pxjQuery/);
+        var paramsRegex = new RegExp(/^@params\.[a-zA-Z0-9\-\_]*$|^-@params\.[a-zA-Z0-9\-\_]*$|^-=@params\.[a-zA-Z0-9\-\_]*$|^\+=@params\.[a-zA-Z0-9\-\_]*$|^@params\.[a-zA-Z0-9\-\_]*.%$|-^@params\.[a-zA-Z0-9\-\_]*.%$|^-=@params\.[a-zA-Z0-9\-\_]*.%$|^\+=@params\.[a-zA-Z0-9\-\_]*.%$|^\(@params\.[a-zA-Z0-9\-\_]*.\)px$|-^\(@params\.[a-zA-Z0-9\-\_]*.\)px$|^-=\(@params\.[a-zA-Z0-9\-\_]*.\)px$|^\+=\(@params\.[a-zA-Z0-9\-\_]*.\)px$/);
+        var domelRegex = new RegExp(/^@domel\.[a-zA-Z0-9\-\_]*$|^-@domel\.[a-zA-Z0-9\-\_]*$|^-=@domel\.[a-zA-Z0-9\-\_]*$|^\+=@domel\.[a-zA-Z0-9\-\_]*$|^@domel\.[a-zA-Z0-9\-\_]*.%$|^-@domel\.[a-zA-Z0-9\-\_]*.%$|^-=@domel\.[a-zA-Z0-9\-\_]*.%$|^\+=@domel\.[a-zA-Z0-9\-\_]*.%$|^\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^-\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^-=\(@domel\.[a-zA-Z0-9\-\_]*.\)px$|^\+=\(@domel\.[a-zA-Z0-9\-\_]*.\)px$/);
+        var randRegex = new RegExp(/^@rand\( *?.+ *?, *?.+ *?\)$|^-@rand\( *?.+ *?, *?.+ *?\)$|^-=@rand\( *?.+ *?, *?.+ *?\)$|^\+=@rand\( *?.+ *?, *?.+ *?\)$|^@rand\( *?.+ *?, *?.+ *?\)%$|^-@rand\( *?.+ *?, *?.+ *?\)%$|^-=@rand\( *?.+ *?, *?.+ *?\)%$|^\+=@rand\( *?.+ *?, *?.+ *?\)%$|^@rand\( *?.+ *?, *?.+ *?\)px$|^-@rand\( *?.+ *?, *?.+ *?\)px$|^-=@rand\( *?.+ *?, *?.+ *?\)px$|^\+=@rand\( *?.+ *?, *?.+ *?\)px$/);
         //var that = this;
         var flaggedWithoutDuration = false;
         if(!properties.options.hasOwnProperty("duration")){
@@ -362,6 +362,8 @@ var MotorCortex = function(options){
                 } else if(property == 'scroll'){
                     scrollCommand = true;
                 }
+
+                console.log('got here');
 
                 numberOfAttrs += 1;
                 if(paramsRegex.exec(properties.attributes[property])){
