@@ -37,6 +37,9 @@ Released under the <a href="http://sam.zoy.org/wtfpl/" target="_blank">WTFPL</a>
 <h3>Bower</h3>
 Package name: MotorCortex.js
 
+<h3>npm</h3>
+Name: motor-cortex-js
+
 <h2>The basics</h2>
 MotorCortex.js provides the ability to define / describe animations and (animated) transitions between states through a CSS (or even LESS) - like syntax.
 <br/>
@@ -63,6 +66,31 @@ two libraries in the jQuery/velocity sequence before including MotorCortex on yo
 &lt;script src=&quot;path/to/jquery.velocity.min.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;path/to/MotorCortex.js&quot;&gt;&lt;/script&gt;
 </code></pre>
+
+<h2>Working with npm and browserify</h2>
+In order to use MotorCortex with browserify you need to install it through npm
+<code>npm install motor-cortex-js</code>
+On any place of your code you need to do the following:
+<br/>
+<pre lang="javascript"><code>
+global.jQuery = require('jquery');
+global.velocity = require('velocity-animate');
+var MotorCortex = require('motor-cortex-js');
+
+/* and proceed normally */
+
+var mc = new MotorCortex();
+mc.loadMSS('./path/to/my_mss.mss', function(){
+    // here you are sure the MotorCortex loaded and rendered the MSS files
+});
+</code></pre>
+<br/>
+MotorCortex depends on jQuery and velocity, so make sure you include both on your package.json file or install them
+manually. The corresponding npm packages are:<br/>
+<ul>
+<li>jquery</li>
+<li>velocity-animate</li>
+</ul>
 
 <h2>Loading the MSS files</h2>
 All animations are defined in MSS files. Once you've loaded both the library and its dependencies you can load one or more MSS
