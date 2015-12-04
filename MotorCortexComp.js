@@ -1,6 +1,6 @@
 /*global jQuery */
 /*!
- * MotorCortex.js 1.0.2
+ * MotorCortex.js 1.0.4
  *
  * Copyright 2014, Andreas Trantidis
  * atrantidis@gmail.com
@@ -363,7 +363,7 @@ var MotorCortex = function(options){
                     scrollCommand = true;
                 }
 
-                console.log('got here');
+                //console.log('got here');
 
                 numberOfAttrs += 1;
                 if(paramsRegex.exec(properties.attributes[property])){
