@@ -550,6 +550,40 @@ will be executed 4 times:
 }
 </code></pre><br/>
 
+<h3>Stop</h3>
+You can easily stop the animation of any animating element at any time. The only thing that you need to do is to create
+an event and after picking the elements you want to stop on this event just pass "stop:true" on the body of the selection.
+<br/>Let's suppose that on the event "stopAnimation" you want to stop animating all elements of class ".item". The only
+thing you need to do is to define on your mss file the corresponding event, set your selector and pass the command:
+<br/>
+<pre lang="css"><code>
+.item:stopEvent{
+    stop:true;
+}
+</code></pre><br/>
+This way all items with class ".item" will stop exactly where they are once the "stopEvent" event gets triggered.<br/>
+On a block that includes the stop command all other properties will be ignored except the "complete". That means that after
+stopping animation of any element in the page you can proceed by any other action by using the "complete" keyword, as regular.<br/>
+
+<h3>Reverse</h3>
+MotorCortex supports reverse of any animation. If you want to reverse the last animation of any element in your DOM just
+pass the "reverse:true" parameter within the body of your selection. All properties (such as delay, duration, etc) apply as usual
+on blocks that execute reverse. You can either use parametric values as usual.<br/>
+It's good to always stop the animation of any element before reversing otherwise the behaviour might be unpredictable. That's
+easy to do by creating a block that executes the stop command and on the complete block has the command reverse. Here's an
+example that demonstrate how to stop and reverse the animation of all elements of class ".item":
+<br/>
+<pre lang="css"><code>
+.item:stopAndReverse{
+    stop:true;
+    complete{
+        reverse:true;
+        duration:200;
+    }
+}
+</code></pre><br/>
+
+
 <h3>Events sequencing</h3>
 MotorCortex lets you define sequences of events (sequencial execution of events). You can define which event you want to
 trigger when an event ends by entering to the global (top) scope of any MSS file the directive:<br/>

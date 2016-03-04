@@ -347,6 +347,8 @@
                 };
 
                 var scrollCommand = false;
+                var stopCommand = false;
+                var reverseCommand = false;
                 for(var property in properties.attributes){
                     if(property == '-.'){
                         var className = properties.attributes[property] + '';
@@ -362,6 +364,10 @@
                         continue;
                     } else if(property == 'scroll'){
                         scrollCommand = true;
+                    } else if(property == 'stop'){
+                        stopCommand = true;
+                    } else if(property == 'reverse'){
+                        reverseCommand = true;
                     }
 
                     numberOfAttrs += 1;
@@ -427,7 +433,7 @@
                     execPreActions(this.selectionFunction(properties, e));
                     callback(e, params);
                     return true;
-                }  else if(flaggedWithoutDuration){
+                }  else if(flaggedWithoutDuration && !stopCommand && !reverseCommand){
                     MC.log("error", "The duration has not been defined. The default (0.3s) will be used");
                 }
 
@@ -437,7 +443,14 @@
                     if(scrollCommand){
                         this.selectionFunction(propsToPass, e).velocity('scroll', propsToPass.options);
                     }
-                    execPreActions(this.selectionFunction(propsToPass, e)).velocity(propsToPass.attributes, propsToPass.options);
+                    if(stopCommand){
+                        execPreActions(this.selectionFunction(propsToPass, e)).velocity('stop');
+                        callback(e, params);
+                    } else if(reverseCommand){
+                        execPreActions(this.selectionFunction(propsToPass, e)).velocity('reverse', propsToPass.options);
+                    } else {
+                        execPreActions(this.selectionFunction(propsToPass, e)).velocity(propsToPass.attributes, propsToPass.options);
+                    }
                     //console.log(properties);
                 } else {
                     var selectedElements = this.selectionFunction(propsToPass, e);
@@ -463,7 +476,11 @@
                             ownAttrs[randoms[i].whichPart][randoms[i].whichKey] = randoms[i].pre + genRandom(randoms[i]['byWhichRand'][0], randoms[i]['byWhichRand'][1]) + randoms[i].units;
                         }
                         ownAttrs.options.complete = function(){CallbackHandler.finished()};
-                        execPreActions($(this)).velocity(ownAttrs.attributes, ownAttrs.options);
+                        if(reverseCommand){
+                            execPreActions($(this)).velocity('reverse', ownAttrs.options);
+                        } else {
+                            execPreActions($(this)).velocity(ownAttrs.attributes, ownAttrs.options);
+                        }
                     });
                 }
 

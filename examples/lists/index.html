@@ -8,9 +8,14 @@
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="../../libs/jquery.velocity.min.js"></script>
 
-    <script src="../../MotorCortex.min.js"></script>
+    <script src="../../MotorCortex.js"></script>
 </head>
 <body>
+    <button class="stop-button">Stop</button>
+    <button class="reverse-button">Reverse</button>
+    <button class="stop-reverse-button">Stop and Reverse</button>
+    <button class="reverse-loop">Reverse Loop</button>
+
     <div class="listContainer">
         <div class="listitem" data-delay="75">
             Lorem ipsum dolor sit amet, consectetur
@@ -59,6 +64,22 @@
                     mc.trigger('unclick');
                 }
 
+            });
+
+            $('.stop-button').click(function(e){
+                mc.trigger('stop');
+            });
+
+            $('.reverse-button').click(function(e){
+                mc.trigger('reverse');
+            });
+
+            $('.stop-reverse-button').click(function(e){
+                mc.trigger('stop-and-reverse');
+            });
+
+            $('.reverse-loop').click(function(e){
+                mc.trigger('reverse-loop');
             });
 
         });
