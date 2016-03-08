@@ -1,6 +1,6 @@
 {
   "name": "motor-cortex-js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "MotorCortex.js provides the ability to define / describe animations and (animated) transitions between states through a CSS (or even LESS) - like syntax. The library is event driven. The developer can define the behavior of DOM elements whenever an event is triggered. This behavior is defined on external MSS (Motor Style Sheet) file(s) (*.mss) which get loaded using a simple load function (loadMSS).",
   "main": "MotorCortexComp.js",
   "dependencies": {
