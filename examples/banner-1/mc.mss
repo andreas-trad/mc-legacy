@@ -76,9 +76,19 @@
 .what:step4{
 	delay:@domel.data-delay;
 	duration:3000;
-	margin-top:0px;
+    top:0;
 }
 
+.howmany:step4{
+    rotateY:90deg;
+    duration:0;
+    complete{
+        -.:hdn;
+        delay:@domel.data-delay;
+        rotateY:0deg;
+        duration:3000;
+    }
+}
 
 
 

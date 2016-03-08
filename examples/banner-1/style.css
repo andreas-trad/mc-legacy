@@ -69,6 +69,7 @@
 }
 
 .trophies{
+    opacity:0.8;
     position: absolute;
     z-index: 4;
     width:100%;
@@ -76,7 +77,7 @@
 }
 
 .trophy{
-    padding-top: 53px;
+    padding-top: 35px;
     font-size: 22px;
     font-family: 'Hind', sans-serif;
     width:251px;
@@ -88,15 +89,25 @@
 }
 
 .trophy .howmany{
-    font-size: 62px;
+    font-size: 110px;
     width:100%;
     text-align: center;
     font-family: 'Alegreya Sans', sans-serif;
-    text-shadow: 2px 2px #333;
+    color:black;
+    background-image: url("./img/trophy.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.trophy .howmany.yellow{
+    color:yellow;
 }
 
 .trophy .what{
-    margin-top:50px;
+    margin-top:20px;
+    position:relative;
+    top:33px;
+    font-size: 0.83em;
 }
 
 .info-row.black{
