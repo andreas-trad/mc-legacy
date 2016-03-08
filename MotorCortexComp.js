@@ -1,6 +1,6 @@
 /*global jQuery */
 /*!
- * MotorCortex.js 1.0.4
+ * MotorCortex.js 1.1.0
  *
  * Copyright 2014, Andreas Trantidis
  * atrantidis@gmail.com
@@ -152,7 +152,7 @@ var MotorCortex = function(options){
     }
 
     var compile = function(topNode, callback){
-        var callbackRegex = new RegExp(/^[a-zA-Z0-9\.\-\_]+\:callbackjQuery/);
+        var callbackRegex = new RegExp(/^[a-zA-Z0-9\.\-\_]+\:callback$/);
         var globalsRegx = new RegExp(/^@[a-zA-Z0-9\.\-\_]*?/);
 
         for(var property in topNode.attributes){
@@ -231,7 +231,7 @@ var MotorCortex = function(options){
 
         this.selectionFunction = this.createSelectionFunction(selector, findString);
 
-        var globalsRegex = new RegExp(/^@globals\.[a-zA-Z0-9\-\_]*jQuery/);
+        var globalsRegex = new RegExp(/^@globals\.[a-zA-Z0-9\-\_]*$/);
 
         var ownAttrs = JSON.parse(JSON.stringify(parentProperties));
         ownAttrs.attributes = {};
@@ -346,6 +346,8 @@ var MotorCortex = function(options){
             };
 
             var scrollCommand = false;
+            var stopCommand = false;
+            var reverseCommand = false;
             for(var property in properties.attributes){
                 if(property == '-.'){
                     var className = properties.attributes[property] + '';
@@ -361,9 +363,11 @@ var MotorCortex = function(options){
                     continue;
                 } else if(property == 'scroll'){
                     scrollCommand = true;
+                } else if(property == 'stop'){
+                    stopCommand = true;
+                } else if(property == 'reverse'){
+                    reverseCommand = true;
                 }
-
-                //console.log('got here');
 
                 numberOfAttrs += 1;
                 if(paramsRegex.exec(properties.attributes[property])){
@@ -428,7 +432,7 @@ var MotorCortex = function(options){
                 execPreActions(this.selectionFunction(properties, e));
                 callback(e, params);
                 return true;
-            }  else if(flaggedWithoutDuration){
+            }  else if(flaggedWithoutDuration && !stopCommand && !reverseCommand){
                 MC.log("error", "The duration has not been defined. The default (0.3s) will be used");
             }
 
@@ -436,10 +440,16 @@ var MotorCortex = function(options){
                 propsToPass.options.complete = function(){callback(e, params);};
                 var animatedElements = this.selectionFunction(propsToPass, e);
                 if(scrollCommand){
-                    velocity(this.selectionFunction(propsToPass, e), 'scroll', propsToPass.options);
+                    this.selectionFunction(propsToPass, e).velocity('scroll', propsToPass.options);
                 }
-                velocity.animate(execPreActions(this.selectionFunction(propsToPass, e)), propsToPass.attributes, propsToPass.options);
-                //execPreActions(this.selectionFunction(propsToPass, e)).velocity(propsToPass.attributes, propsToPass.options);
+                if(stopCommand){
+                    execPreActions(this.selectionFunction(propsToPass, e)).velocity('stop');
+                    callback(e, params);
+                } else if(reverseCommand){
+                    execPreActions(this.selectionFunction(propsToPass, e)).velocity('reverse', propsToPass.options);
+                } else {
+                    execPreActions(this.selectionFunction(propsToPass, e)).velocity(propsToPass.attributes, propsToPass.options);
+                }
                 //console.log(properties);
             } else {
                 var selectedElements = this.selectionFunction(propsToPass, e);
@@ -458,15 +468,18 @@ var MotorCortex = function(options){
                 selectedElements.each(function(){
                     var ownAttrs = JSON.parse(JSON.stringify(propsToPass));
                     for(var i=0; i<parametrics.length; i++){
-                        //console.log(jQuery(this).attr(parametrics[i].byWhichAttr));
-                        ownAttrs[parametrics[i].whichPart][parametrics[i].whichKey] = parametrics[i].pre + jQuery(this).attr(parametrics[i].byWhichAttr) + parametrics[i].units;
+                        //console.log($(this).attr(parametrics[i].byWhichAttr));
+                        ownAttrs[parametrics[i].whichPart][parametrics[i].whichKey] = parametrics[i].pre + $(this).attr(parametrics[i].byWhichAttr) + parametrics[i].units;
                     }
                     for(var i=0; i<randoms.length; i++){
                         ownAttrs[randoms[i].whichPart][randoms[i].whichKey] = randoms[i].pre + genRandom(randoms[i]['byWhichRand'][0], randoms[i]['byWhichRand'][1]) + randoms[i].units;
                     }
                     ownAttrs.options.complete = function(){CallbackHandler.finished()};
-                    velocity(execPreActions(jQuery(this)), ownAttrs.attributes, ownAttrs.options);
-                    //execPreActions(jQuery(this)).velocity(ownAttrs.attributes, ownAttrs.options);
+                    if(reverseCommand){
+                        execPreActions($(this)).velocity('reverse', ownAttrs.options);
+                    } else {
+                        execPreActions($(this)).velocity(ownAttrs.attributes, ownAttrs.options);
+                    }
                 });
             }
 
@@ -488,7 +501,7 @@ var MotorCortex = function(options){
         var expressions = [
             {
                 name:'index greater than',
-                rxp:new RegExp(/^@index\ *?\>\ *?\d+jQuery/),
+                rxp:new RegExp(/^@index\ *?\>\ *?\d+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         return ":gt(" + string.split(":")[1].trim() + ")";
@@ -497,7 +510,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index less than',
-                rxp:new RegExp(/^@index\ *?\<\ *?\d+jQuery/),
+                rxp:new RegExp(/^@index\ *?\<\ *?\d+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         return ":lt(" + string.split(":")[1].trim() + ")";
@@ -506,7 +519,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index less or equal to',
-                rxp:new RegExp(/^@index\ *?\<\=\ *?\d+jQuery/),
+                rxp:new RegExp(/^@index\ *?\<\=\ *?\d+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         return ":lt(" + string.split(":")[1].trim() + "):eq"+ string.split(":")[1].trim() + ")";
@@ -515,7 +528,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index greater or equal to',
-                rxp:new RegExp(/^@index\ *?\>\=\ *?\d+jQuery/),
+                rxp:new RegExp(/^@index\ *?\>\=\ *?\d+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         return ":gt(" + string.split(":")[1].trim() + "):eq"+ string.split(":")[1].trim() + ")";
@@ -524,7 +537,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index equals to',
-                rxp:new RegExp(/^@index\ *?\={2}\ *?\d+jQuery/),
+                rxp:new RegExp(/^@index\ *?\={2}\ *?\d+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         return ":eq(" + string.split(":")[1].trim() + ")";
@@ -533,7 +546,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index odd',
-                rxp:new RegExp(/^@index *?oddjQuery/),
+                rxp:new RegExp(/^@index *?odd$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         return ":odd";
@@ -542,7 +555,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index even',
-                rxp:new RegExp(/^@index *?evenjQuery/),
+                rxp:new RegExp(/^@index *?even$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         return ":even";
@@ -552,7 +565,7 @@ var MotorCortex = function(options){
             // parametric (uses the MotorCortex call parameters)
             {
                 name:'index greater than parameter',
-                rxp:new RegExp(/^@index\ *?\>\ *\@params. ?[a-zA-Z0-9\.\-\_]+jQuery/),
+                rxp:new RegExp(/^@index\ *?\>\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         var key = string.split(":")[1].trim().split('.')[1];
@@ -567,7 +580,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index less than parameter',
-                rxp:new RegExp(/^@index\ *?\<\ *\@params. ?[a-zA-Z0-9\.\-\_]+jQuery/),
+                rxp:new RegExp(/^@index\ *?\<\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         var key = string.split(":")[1].trim().split('.')[1];
@@ -582,7 +595,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index less or equal to parameter',
-                rxp:new RegExp(/^@index\ *?\<\=\ *\@params. ?[a-zA-Z0-9\.\-\_]+jQuery/),
+                rxp:new RegExp(/^@index\ *?\<\=\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         var key = string.split(":")[1].trim().split('.')[1];
@@ -598,7 +611,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index greater or equal to parameter',
-                rxp:new RegExp(/^@index\ *?\>\=\ *\@params. ?[a-zA-Z0-9\.\-\_]+jQuery/),
+                rxp:new RegExp(/^@index\ *?\>\=\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         var key = string.split(":")[1].trim().split('.')[1];
@@ -613,7 +626,7 @@ var MotorCortex = function(options){
             },
             {
                 name:'index greater than parameter',
-                rxp:new RegExp(/^@index\ *?\={2}\ *\@params. ?[a-zA-Z0-9\.\-\_]+jQuery/),
+                rxp:new RegExp(/^@index\ *?\={2}\ *\@params. ?[a-zA-Z0-9\.\-\_]+$/),
                 createSelectionFunction:function(string){
                     return function(params){
                         var key = string.split(":")[1].trim().split('.')[1];
@@ -651,10 +664,10 @@ var MotorCortex = function(options){
                         }
                         triggeringElementFunction = function(e){
                             if(e){
-                                return jQuery(e.target);
+                                return $(e.target);
                             } else {
                                 MC.log("error", "You have included the 'triggeringElement' directive in your selection string on MSS, though you didn't pass the event object on the trigger function. The directive will be ignored");
-                                return jQuery("*");
+                                return $("*");
                             }
                         };
                         triggeringElementFunctionFound = true;
@@ -665,10 +678,10 @@ var MotorCortex = function(options){
                         }
                         triggeringElementFunction = function(e){
                             if(e){
-                                return jQuery("*").not(jQuery(e.target));
+                                return $("*").not($(e.target));
                             } else {
                                 MC.log("error", "You have included the 'triggeringElement' directive in your selection string on MSS, though you didn't pass the event object on the trigger function. The directive will be ignored");
-                                return jQuery("*");
+                                return $("*");
                             }
                         };
                         triggeringElementFunctionFound = true;
@@ -702,7 +715,7 @@ var MotorCortex = function(options){
                 //console.log(filterString);
 
                 if(!triggeringElementFunction){
-                    var toreturn = jQuery(filterString);
+                    var toreturn = $(filterString);
                 } else {
                     var toreturn = triggeringElementFunction(e).filter(filterString);
                 }
@@ -856,7 +869,7 @@ var MotorCortex = function(options){
         base.init = function () {
             // String functions
             String.prototype.trim = function () {
-                return this.replace(/^\s+|\s+jQuery/g, '');
+                return this.replace(/^\s+|\s+$/g, '');
             };
 
             String.prototype.repeat = function (n) {
@@ -1067,7 +1080,7 @@ var MotorCortex = function(options){
 
         for(var i=0; i<filesLength; i++){
             var currentlyScanning = filesToScan[i];
-            jQuery.ajax({
+            $.ajax({
                 url: currentlyScanning,
                 type: 'GET',
                 async: true,
