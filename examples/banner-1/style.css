@@ -1,0 +1,181 @@
+#banner-1{
+    width: 768px;
+    height: 219px;
+    overflow: hidden;
+}
+
+#banner-1 .container{
+    position:relative;
+    width:100%;
+    height:100%;
+}
+
+.layer-1{
+    top:-50px;
+    z-index:0;
+    position:absolute;
+    width:1024px;
+    height:292px;
+    transform-origin:left top;
+}
+
+.player{
+    z-index: 1;
+    width:100%;
+    height:200%;
+    position: absolute;
+    top:-380px;
+    opacity: 0;
+}
+
+#player{
+    width:100%;
+    height:200%;
+}
+
+.hdn{
+    display: none;
+}
+
+.layer-1 img{
+    width:100%;
+}
+
+.info-rows{
+    width:768px;
+    height:219px;
+    position: absolute;
+    z-index: 2;
+    top:0;
+    left:0;
+}
+
+
+.info-row{
+    overflow: hidden;
+    opacity:0.5;
+    height: 33.333%;
+    width:100%;
+    position: relative;
+}
+
+.info-row .text{
+    position: relative;
+    font-family: 'Hind', sans-serif;
+    width:100%;
+    padding-top:15px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.trophies{
+    opacity:0.8;
+    position: absolute;
+    z-index: 4;
+    width:100%;
+    height:100%;
+}
+
+.trophy{
+    padding-top: 35px;
+    font-size: 22px;
+    font-family: 'Hind', sans-serif;
+    width:251px;
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+    color:white;
+    margin-bottom:20px;
+}
+
+.trophy .howmany{
+    font-size: 110px;
+    width:100%;
+    text-align: center;
+    font-family: 'Alegreya Sans', sans-serif;
+    color:black;
+    background-image: url("./img/trophy.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.logo{
+    z-index: 6;
+    top:0;
+    left:-140px;
+    position: absolute;
+    height: 214px;
+}
+
+.logo img{
+    height:100%;
+}
+
+.trophy .howmany.yellow{
+    color:yellow;
+}
+
+.trophy .what{
+    margin-top:20px;
+    position:relative;
+    top:33px;
+    font-size: 0.83em;
+}
+
+.info-row.black{
+    background: black;
+    color:yellow;
+    left:768px;
+}
+
+.info-row.black .text{
+    left:100px;
+}
+
+.info-row.yellow .text{
+    left:-100px;
+}
+
+.info-row.yellow{
+    color:black;
+    background: yellow;
+    left:-768px;
+}
+
+
+.follow{
+    z-index: 5;
+    position: absolute;
+    width:389px;
+    left:141px;
+    height: 100%;
+    font-size: 32px;
+    font-family: 'Alegreya Sans', sans-serif;
+}
+
+.follow-title{
+    margin-top:15px;
+    color:yellow;
+    position: relative;
+    width:100%;
+    text-align: center;
+    margin-bottom:10px;
+}
+
+.follow .icons a{
+    display: block;
+    cursor: pointer;
+    font-size:14px;
+    margin-bottom:12px;
+    padding:8px 0;
+    background: yellow;
+    color:black;
+    font-family: 'Alegreya Sans', sans-serif;
+    text-align: center;
+    text-decoration: none;
+}
+
+.follow .icons a:hover{
+    color:yellow;
+    background: black;
+}
