@@ -24,7 +24,7 @@
     width:100%;
     height:200%;
     position: absolute;
-    top:-270px;
+    top:-380px;
     opacity: 0;
 }
 
@@ -99,6 +99,18 @@
     background-position: center;
 }
 
+.logo{
+    z-index: 6;
+    top:0;
+    left:-140px;
+    position: absolute;
+    height: 214px;
+}
+
+.logo img{
+    height:100%;
+}
+
 .trophy .howmany.yellow{
     color:yellow;
 }
@@ -130,3 +142,40 @@
     left:-768px;
 }
 
+
+.follow{
+    z-index: 5;
+    position: absolute;
+    width:389px;
+    left:141px;
+    height: 100%;
+    font-size: 32px;
+    font-family: 'Alegreya Sans', sans-serif;
+}
+
+.follow-title{
+    margin-top:15px;
+    color:yellow;
+    position: relative;
+    width:100%;
+    text-align: center;
+    margin-bottom:10px;
+}
+
+.follow .icons a{
+    display: block;
+    cursor: pointer;
+    font-size:14px;
+    margin-bottom:12px;
+    padding:8px 0;
+    background: yellow;
+    color:black;
+    font-family: 'Alegreya Sans', sans-serif;
+    text-align: center;
+    text-decoration: none;
+}
+
+.follow .icons a:hover{
+    color:yellow;
+    background: black;
+}

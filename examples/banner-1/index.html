@@ -17,34 +17,47 @@
             <div class="layer-1">
                 <img src="./img/fans.jpg" />
             </div>
+            <div class="logo">
+                <img src="./img/20140916004144!Aris_BC_logo.png" />
+            </div>
             <div class="player">
                 <div id="player"></div>
             </div>
             <div class="info-rows">
-                <div class="info-row black" data-delay="0">
-                    <div class="text">ARIS</div>
+                <div class="info-row black not-contains-thess" data-delay="0">
+                    <div class="text no-thess" data-delay="1500">ARIS</div>
                 </div>
-                <div class="info-row yellow" data-delay="500">
-                    <div class="text">Basketball Club</div>
+                <div class="info-row yellow not-contains-thess" data-delay="500">
+                    <div class="text no-thess" data-delay="1000">Basketball Club</div>
                 </div>
-                <div class="info-row black" data-delay="1000">
-                    <div class="text thess">
+                <div class="info-row contains-thess black" data-delay="1000">
+                    <div class="text thess" data-delay="500">
                         Thessaloniki
                     </div>
                 </div>
             </div>
             <div class="trophies hdn">
                 <div class="trophy">
-                    <div class="howmany hdn yellow" data-delay="0">10</div>
-                    <div class="what" data-delay="0">greek championships</div>
+                    <div class="howmany hdn yellow" data-delay="500">10</div>
+                    <div class="what" data-delay="500">greek championships</div>
                 </div>
                 <div class="trophy">
-                    <div class="howmany hdn" data-delay="500">8</div>
-                    <div class="what" data-delay="500">greek cups</div>
+                    <div class="howmany hdn" data-delay="1000">8</div>
+                    <div class="what" data-delay="1000">greek cups</div>
                 </div>
                 <div class="trophy">
-                    <div class="howmany hdn yellow" data-delay="1000">3</div>
-                    <div class="what" data-delay="1000">european trophies</div>
+                    <div class="howmany hdn yellow" data-delay="1500">3</div>
+                    <div class="what" data-delay="1500">european trophies</div>
+                </div>
+            </div>
+            <div class="follow hdn">
+                <div class="follow-title to-be-shown" data-delay="0">
+                    Follow the Emperor
+                </div>
+                <div class="icons">
+                    <a href="http:www.arisbc.gr" target="_blank" class="to-be-shown" data-delay="1000">Official website</a>
+                    <a href="https://www.facebook.com/arisbc.gr/" target="_blank" class="to-be-shown" data-delay="2000">Facebook</a>
+                    <a href="https://www.youtube.com/user/ArisBasketballClub" target="_blank" class="to-be-shown" data-delay="3000">Youtube</a>
                 </div>
             </div>
         </div>
@@ -74,11 +87,10 @@
             player = new YT.Player('player', {
                 height: '500',
                 width: '768',
-                videoId: '6LhsIRaEG2Q',
+                videoId: 'cWizbFI7I_I',
                 playerVars:{
                     fs:0,
                     controls:0,
-                    loop:1,
                     modestbranding:1,
                     showinfo:0,
                     rel:0
@@ -92,10 +104,8 @@
 
         // 4. The API will call this function when the video player is ready.
         function onPlayerReady(event) {
-            setTimeout(function(){
-                event.target.mute();
-                event.target.playVideo();
-            }, 1000);
+            event.target.mute();
+            event.target.playVideo();
 
         }
 

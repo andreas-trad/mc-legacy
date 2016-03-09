@@ -26,6 +26,11 @@
 	easing:linear;
 }
 
+.howmany:step2{
+    rotateY:90deg;
+    duration:0;
+}
+
 
 .info-row:step2{
 	delay:@domel.data-delay;
@@ -33,11 +38,30 @@
 	left:0;
 }
 
-.text:step2{
-	duration:6000;
+.text:step2-a{
+	duration:8000;
 	left:0px;
 }
 
+.yellow .text:step2-b{
+	left:100px;
+	duration:1000;
+}
+
+.black .text:step2-b{
+	left:-100px;
+	duration:1000;
+}
+
+.text.no-thess:step3{
+	left:0;
+	duration:500;
+}
+
+.thess:step3{
+	left:-48px;
+	duration:500;
+}
 
 .info-rows:step3{
 	duration:1500;
@@ -46,54 +70,128 @@
 	top:-203px;
 }
 
-.player:step3{
+
+.text:step3{
+	padding-top:0;
+	delay:1500;
+	duration:500;
+}
+
+
+.trophies:step3{
+	-.:hdn;
+}
+
+.what:step3{
+	delay:@domel.data-delay;
+	duration:3000;
+  top:0;
+  textShadowBlur:10px;
+}
+
+.howmany:step3{
+		-.:hdn;
+		delay:@domel.data-delay;
+		rotateY:0deg;
+		duration:3000;
+		complete{
+			opacity:1;
+			duration:1500;
+			textShadowBlur:15px;
+		}
+}
+
+.info-row:step3{
+	opacity:0.35;
+	duration:3000;
+}
+
+
+.info-row.not-contains-thess:step4{
+	delay:@domel.data-delay;
+  	duration:1250;
+  	height:63px;
+  	opacity:0.6;
+  	padding-top:15px;
+}
+
+.info-row.contains-thess:step4{
+	delay:@domel.data-delay;
+	duration:1250;
+	height:642px;
+	opacity:0.3;
+	padding-top:15px;
+}
+
+.logo:step4{
+	left:16px;
+	rotateZ:-6deg;
+	duration:2000;
+}
+
+
+.player:step4{
+	opacity:1;
+	duration:1250;
+}
+
+.trophies:step4{
 	opacity:1;
 	duration:1000;
 }
 
-.layer-1:step3{
-	opacity:0;
+.trophy:step4{
+	delay:@domel.data-delay;
+	rotateY:-90deg;
+	duration:1250;
+	opacity:0.5;
+}
+
+.player:step5{
+	opacity:0.8;
+	duration:1500;
+}
+
+
+
+.to-be-shown:step5{
+	rotateX:90deg;
+	duration:0;
+	complete{
+		delay:1500;
+		opacity:1;
+		duration:0;
+	}
+}
+
+
+.follow:step6{
+	-.:hdn;
+}
+
+.to-be-shown:step6{
+	delay:@domel.data-delay;
+	rotateX:0deg;
 	duration:1000;
+}
+
+.player:step7{
+	opacity:0;
+	duration:9000;
 	complete{
 		+.:hdn;
 	}
 }
 
-.thess:step3{
-	left:-48px;
-	duration:1500;
-}
-
-.text:step4{
-	padding-top:0;
-	duration:500;
-}
-
-.trophies:step4{
-	-.:hdn;
-}
-
-.what:step4{
-	delay:@domel.data-delay;
+.info-row:step6{
+	opacity:0.6;
 	duration:3000;
-    top:0;
 }
-
-.howmany:step4{
-    rotateY:90deg;
-    duration:0;
-    complete{
-        -.:hdn;
-        delay:@domel.data-delay;
-        rotateY:0deg;
-        duration:3000;
-    }
-}
-
 
 
 anim:callback{
 	eventName:step2;
+	eventName:step2-a;
 }
 
 step2:callback{
@@ -102,4 +200,20 @@ step2:callback{
 
 step3:callback{
 	eventName:step4;
+}
+
+step2-a:callback{
+	eventName:step2-b;
+}
+
+step4:callback{
+	eventName:step5;
+}
+
+step5:callback{
+	eventName:step6;
+}
+
+step6:callback{
+	eventName:step7;
 }
