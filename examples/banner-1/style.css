@@ -17,6 +17,7 @@
     width:1024px;
     height:292px;
     transform-origin:left top;
+    transform-style: preserve-3d;
 }
 
 .player{

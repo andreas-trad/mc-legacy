@@ -7,10 +7,14 @@
 		opacity:1;
 		scale:1;
 		duration:3000;
-		left: -256px;
+		left: -110px;
 		easing:easeOutQuad;
+		rotateY:-8deg;
 		complete{
+			translateY:0px;
+			scale:1.03;
 			left:0px;
+			rotateY:10deg;
 			duration:3000;
 			easing:easeInOutQuad;
 		}
@@ -19,6 +23,8 @@
 }
 
 .layer-1:step2{
+	translateY:0;
+	rotateY:0deg;
 	scale: 0.75;
 	duration:9000;
 	top:0;
@@ -73,7 +79,7 @@
 
 .text:step3{
 	padding-top:0;
-	delay:1500;
+	delay:1000;
 	duration:500;
 }
 
