@@ -653,7 +653,7 @@ of any element of the webpage.<br/>
 In order to do that just put "scroll:true" to the animation attributes of any element.<br/>
 Example: <br/>
 <pre lang="css"><code>
-#section:myEvent{
+# section:myEvent{
     duration:300;
     scroll:true;
 }
