@@ -1,4 +1,4 @@
-<h1>motorcortexjs</h1>
+<h1>mc</h1>
 =============
 
 <h2>Website</h2>
