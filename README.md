@@ -1,7 +1,8 @@
 <h1>mc legacy</h1>
 
 <h2>Disclaimer</h2>
-This project is discontinuted and it remains here for historical reasons. There is a new, better and more holistic approach on web animations though via the newer and better <a href="https://motorcortexjs.com/" target="_blank">version</a>
+This project is discontinuted and it remains here for historical reasons. There is a new, better and more holistic approach on web animations though the newer and better <a href="https://motorcortexjs.com/" target="_blank">version</a>
+
 =============
 
 <h2>Intro</h2>
